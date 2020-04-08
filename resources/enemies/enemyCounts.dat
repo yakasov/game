@@ -1,0 +1,13 @@
+{
+  11: 2,
+  21: 4,
+  31: random.randint(3, 7),
+  12: 4,
+  22: random.randint(3, 7),
+  32: random.randint(5, 9),
+  13: random.randint(3, 7),
+  23: random.randint(5, 9),
+  33: 0,
+  34: 5,
+  35: random.randint(5, 9)
+}

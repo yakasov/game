@@ -1,0 +1,13 @@
+# REQUIRED:
+colours.dat
+enemies/bosses.dat
+enemies/enemyCounts.dat
+items/items.dat
+#
+# RECOMMENDED:
+screens/borderOverrides.dat
+#
+# Using a hash anywhere in a line will disable the data file and it will not be used
+# Be careful when disabling! Some are required by the game
+#
+# Use hashes when creating empty lines
