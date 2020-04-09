@@ -1,0 +1,16 @@
+1.1
++ Implemented new enemy projectile vector system for better projection
++ Player will now take 10 damage from enemy projectiles
++ Added run.bat which will install pygame and run the game from the command line
+~ Changed AQUA PLAYER_VELOCITY item from magnitude 2 to 1
+~ Beautified all .dat files using JSON settings (Ctrl-J, keymap = 'ctrl-j': 'atom-beautify:beautify-language-json')
+~ Beautifed all .py files using Python settings (Ctrl-K, keymap = 'ctrl-k': 'atom-beautify:beautify-language-python')
+* Fixed enemy stages permanently increasing when passing Y 3
+* Fixed health not updating unless taking damage
+* Added error handling when exception caught when removing enemy projectiles
+* Fixed bosses only having 1 health due to change in enemy data structure
+* Fixed screen-specific items persisting after pickup
+
+
+1.0
+- Initial Commit

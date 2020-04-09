@@ -1,8 +1,12 @@
-import pygame, random, time
+import pygame
+import random
+import time
 from dictResolver import *
+from pygame.locals import *
 pygame.init()
 
 COLOURS = loadDictionaries('colours')
+
 
 class player():
     def __init__(self):
@@ -21,16 +25,20 @@ class player():
         self.health = 100
         self.healthMax = 100
         self.healthBarBase = pygame.Rect(0, WINDOW_HEIGHT, WINDOW_WIDTH, 50)
-        self.healthBar = pygame.Rect(0, WINDOW_HEIGHT, self.health * (WINDOW_WIDTH / self.healthMax), 50)
+        self.healthBar = pygame.Rect(
+            0, WINDOW_HEIGHT, self.health * (WINDOW_WIDTH / self.healthMax), 50)
         self.invulnerabilityTime = 0
         self.flashTime = 0
 
     def updateHealth(self):
-        self.healthBar = pygame.Rect(0, WINDOW_HEIGHT, self.health * (WINDOW_WIDTH / self.healthMax), 50)
+        self.healthBar = pygame.Rect(
+            0, WINDOW_HEIGHT, self.health * (WINDOW_WIDTH / self.healthMax), 50)
 
     def checkHealth(self):
         if self.health > self.healthMax:
             self.health = self.healthMax
+
+        self.updateHealth()
 
         if self.health <= 0:
             for i in range(52):
@@ -38,7 +46,8 @@ class player():
                 WINDOW.fill((x, x, x))
                 pygame.display.update()
                 time.sleep(0.0512)
-            gameOverText = LARGE_FONT.render('Game Over', True, COLOURS['BLACK'], COLOURS['WHITE'])
+            gameOverText = LARGE_FONT.render(
+                'Game Over', True, COLOURS['BLACK'], COLOURS['WHITE'])
             textBox = gameOverText.get_rect()
             textBox.center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2)
             WINDOW.blit(gameOverText, textBox)
@@ -55,7 +64,8 @@ class player():
             yModifier = magnitude * 0.5 * self.modelHeight
             xModifier = 0
 
-        self.newProjectile = pygame.Rect(self.model.centerx + xModifier, self.model.centery + yModifier, 3, 3)
+        self.newProjectile = pygame.Rect(
+            self.model.centerx + xModifier, self.model.centery + yModifier, 3, 3)
         self.projectiles.append([self.newProjectile, direction, magnitude])
 
     def updateProjectiles(self):
@@ -84,7 +94,8 @@ class enemies():
         self.projFireRate = 100
         self.lastFireTime = 0
 
-        self.enemyStages = ['DEAD', COLOURS['RED'], COLOURS['AQUA'], COLOURS['MAGENTA']]
+        self.enemyStages = ['DEAD', COLOURS['RED'],
+                            COLOURS['AQUA'], COLOURS['MAGENTA']]
         self.screenCleared = {}
         self.currentEnemies = []
         self.currentBosses = []
@@ -97,22 +108,29 @@ class enemies():
         self.currentEnemies = []
         try:
             for count in range(0, self.enemyCounts[s.currentScreen]):
-                self.enemy = pygame.Rect(s.createRandomCoordinates(WINDOW_WIDTH), s.createRandomCoordinates(WINDOW_HEIGHT), self.modelWidth, self.modelHeight)
+                self.enemy = pygame.Rect(s.createRandomCoordinates(WINDOW_WIDTH), s.createRandomCoordinates(
+                    WINDOW_HEIGHT), self.modelWidth, self.modelHeight)
                 if count % 3 == 0:
                     self.type = 'shooter'
                 else:
                     self.type = 'base'
-                self.currentEnemies.append([self.enemy, self.colour, self.type, self.lastFireTime])
+                self.currentEnemies.append(
+                    [self.enemy, self.colour, self.type, self.lastFireTime])
         except KeyError:
-            print('>>> No enemies available for screen {}! @ {}'.format(s.currentScreen, TIME))
+            print('>>> No enemies available for screen {}! @ {}'.format(
+                s.currentScreen, TIME))
 
         if s.currentScreen in self.bosses and self.bosses[s.currentScreen]['health'] > 0:
             self.previousVel = self.vel
             self.bossData = self.bosses[s.currentScreen]
             self.vel = self.bossData['velocity']
-            self.boss = pygame.Rect(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, self.bossData['size'], self.bossData['size'])
-            self.currentEnemies.append([self.boss, COLOURS['RED']])
-            self.currentBosses.append([self.boss, COLOURS['RED']])
+            self.type = self.bossData['type']
+            self.boss = pygame.Rect(
+                WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, self.bossData['size'], self.bossData['size'])
+            self.currentEnemies.append(
+                [self.boss, COLOURS['RED'], self.type, self.lastFireTime])
+            self.currentBosses.append(
+                [self.boss, COLOURS['RED'], self.type, self.lastFireTime])
 
     def updateEnemies(self):
         for enemyData in self.currentEnemies:
@@ -131,18 +149,19 @@ class enemies():
                         else:
                             self.updateHealth(enemyData)
                     except ValueError:
-                        print('>>> Too many projectiles causing too many enemy kills! @ {}'.format(TIME))
+                        print(
+                            '>>> Too many projectiles causing too many enemy kills! @ {}'.format(TIME))
                     p.projectiles.remove(projectile)
 
             if TIME - self.lastMovement > self.enemyUpdatePeriod:
-                    if enemy.centerx < p.model.centerx:
-                        enemy.centerx += self.vel
-                    else:
-                        enemy.centerx -= self.vel
-                    if enemy.centery < p.model.centery:
-                        enemy.centery += self.vel
-                    else:
-                        enemy.centery -= self.vel
+                if enemy.centerx < p.model.centerx:
+                    enemy.centerx += self.vel
+                else:
+                    enemy.centerx -= self.vel
+                if enemy.centery < p.model.centery:
+                    enemy.centery += self.vel
+                else:
+                    enemy.centery -= self.vel
 
         if TIME - self.lastMovement > self.enemyUpdatePeriod:
             self.lastMovement = TIME
@@ -152,7 +171,8 @@ class enemies():
             self.screenCleared[s.currentScreen] = True
 
     def updateHealth(self, enemyData):
-        enemyData[1] = self.enemyStages[self.enemyStages.index(enemyData[1]) - 1]
+        enemyData[1] = self.enemyStages[self.enemyStages.index(
+            enemyData[1]) - 1]
         if enemyData[1] == 'DEAD':
             self.currentEnemies.remove(enemyData)
 
@@ -178,25 +198,37 @@ class enemies():
         else:
             p.colour = COLOURS['WHITE']
 
-    def fire(self, enemyData): ### <--- every x seconds, fire projectile
+    def fire(self, enemyData):
         enemy = enemyData[0]
-        self.lastFireTime = TIME
+        enemyData[3] = TIME
+        if s.currentScreen in e.bosses:
+            for bossData in e.currentBosses:
+                if enemy == bossData[0]:
+                    bossData[3] = enemyData[3]
         dx = p.model.centerx - enemy.centerx
         dy = p.model.centery - enemy.centery
-        grad = dy / dx
 
         self.newProjectile = pygame.Rect(enemy.centerx, enemy.centery, 3, 3)
-        self.projectiles.append([self.newProjectile, grad])
+        self.projectiles.append([self.newProjectile, dx, dy])
 
     def updateProjectiles(self):
         for projectile in self.projectiles:
-            projectile[0].centerx += (1 / projectile[1]) * self.projVel
-            projectile[0].centery == projectile[1] * self.projVel
+            self.dirvect = pygame.math.Vector2(projectile[1], projectile[2])
+            self.dirvect.normalize()
+            self.dirvect.scale_to_length(self.projVel)
+            projectile[0].move_ip(self.dirvect)
 
-            if projectile[0].centerx > WINDOW_WIDTH or projectile[0].centerx < 0:
-                self.projectiles.remove(projectile)
-            if projectile[0].centery > WINDOW_HEIGHT or projectile[0].centery < 0:
-                self.projectiles.remove(projectile)
+            try:
+                if projectile[0].centerx > WINDOW_WIDTH or projectile[0].centerx < 0:
+                    self.projectiles.remove(projectile)
+                if projectile[0].centery > WINDOW_HEIGHT or projectile[0].centery < 0:
+                    self.projectiles.remove(projectile)
+
+                if projectile[0].colliderect(p.model):
+                    p.health -= 10
+                    self.projectiles.remove(projectile)
+            except ValueError:
+                print('Error removing enemy projectile! @ {}'.format(TIME))
 
 
 class items():
@@ -204,30 +236,34 @@ class items():
         self.currentItems = []
         try:
             for item in self.items[0]:
-                self.currentItems.append(item)
-                item['rolled'] = 200
+                if item['chance'] != 0:
+                    self.currentItems.append(item)
+                    item['rolled'] = 200
         except KeyError:
             print('>>> No items found with all screen spawns! @ {}'.format(TIME))
             pass
         try:
             for item in self.items[s.currentScreen]:
-                self.currentItems.append(item)
-                item['rolled'] = 200
+                if item['chance'] != 0:
+                    self.currentItems.append(item)
+                    item['rolled'] = 200
         except KeyError:
-            print('>>> No items found for screen {}! @ {}'.format(s.currentScreen, TIME))
+            print('>>> No items found for screen {}! @ {}'.format(
+                s.currentScreen, TIME))
 
     def checkItemCollisions(self):
         for item in self.currentItems:
             if p.model.colliderect(item['model']):
-                if 'PLAYER_VELOCITY' in item['attributes']: ## Default 5
+                if 'PLAYER_VELOCITY' in item['attributes']:  # Default 5
                     p.vel += item['magnitude']
-                if 'PLAYER_HEALTH' in item['attributes']: ## Default 100
+                if 'PLAYER_HEALTH' in item['attributes']:  # Default 100
                     p.healthMax += item['magnitude']
                     p.health += item['magnitude']
-                if 'PROJECTILE_VELOCITY' in item['attributes']: ## Default 8
+                if 'PROJECTILE_VELOCITY' in item['attributes']:  # Default 8
                     p.projVel += item['magnitude'] * 2
-                if 'PROJECTILE_RATE' in item['attributes']: ## Default 100
+                if 'PROJECTILE_RATE' in item['attributes']:  # Default 100
                     p.projFireRate -= item['magnitude'] * 5
+                print('Player picked up {} @ {}'.format(item, TIME))
                 self.currentItems.remove(item)
                 item['chance'] = 0
 
@@ -240,8 +276,10 @@ class screens():
         self.borderColour = (51, 51, 51)
         self.borderSize = 10
         self.topBar = pygame.Rect(0, 0, WINDOW_WIDTH, self.borderSize)
-        self.bottomBar = pygame.Rect(0, WINDOW_HEIGHT - self.borderSize, WINDOW_WIDTH, self.borderSize)
-        self.rightBar = pygame.Rect(WINDOW_WIDTH - self.borderSize, 0, self.borderSize, WINDOW_HEIGHT)
+        self.bottomBar = pygame.Rect(
+            0, WINDOW_HEIGHT - self.borderSize, WINDOW_WIDTH, self.borderSize)
+        self.rightBar = pygame.Rect(
+            WINDOW_WIDTH - self.borderSize, 0, self.borderSize, WINDOW_HEIGHT)
         self.leftBar = pygame.Rect(0, 0, self.borderSize, WINDOW_HEIGHT)
         self.lettersToBorders = {'T': self.topBar,
                                  'B': self.bottomBar,
@@ -252,6 +290,8 @@ class screens():
     def screenUpdate(self):
         if s.currentScreen % 10 > 3:
             e.colour = COLOURS['AQUA']
+        else:
+            e.colour = COLOURS['RED']
 
         i.checkCurrentScreenItems()
         e.createEnemies()
@@ -263,9 +303,11 @@ class screens():
             if self.currentScreen in self.borderOverrides and self.bordersToDraw == []:
                 for letter in self.borderOverrides[self.currentScreen]:
                     try:
-                        self.bordersToDraw.append(self.lettersToBorders[letter])
+                        self.bordersToDraw.append(
+                            self.lettersToBorders[letter])
                     except KeyError:
-                        print('>>> Incorrect borders found for screen border override! @ {}'.format(TIME))
+                        print(
+                            '>>> Incorrect borders found for screen border override! @ {}'.format(TIME))
                         pass
             else:
                 if self.currentScreen + 10 in e.enemyCounts:
@@ -274,7 +316,7 @@ class screens():
                     self.bordersToDraw.append(self.leftBar)
                 if self.currentScreen + 1 in e.enemyCounts:
                     self.bordersToDraw.append(self.topBar)
-                if self.currentScreen -1 in e.enemyCounts:
+                if self.currentScreen - 1 in e.enemyCounts:
                     self.bordersToDraw.append(self.bottomBar)
             for bar in self.bordersToDraw:
                 pygame.draw.rect(WINDOW, self.borderColour, bar)
@@ -354,7 +396,7 @@ i = items()
 s = screens()
 d = debug()
 
-## Load dictionaries from the 'resources' folder.
+# Load dictionaries from the 'resources' folder.
 e.bosses = loadDictionaries('bosses')
 e.enemyCounts = loadDictionaries('enemyCounts')
 i.items = loadDictionaries('items')
@@ -390,27 +432,30 @@ while True:
 
     p.updateProjectiles()
     e.updateEnemies()
+    e.updateProjectiles()
     e.checkEnemyCollisions()
     i.checkItemCollisions()
 
     WINDOW.fill(COLOURS['BLACK'])
     for enemyData in e.currentEnemies:
         pygame.draw.rect(WINDOW, enemyData[1], enemyData[0])
-        print(enemyData)
-        if enemyData[2] == 'shooter' and TIME - enemyData[3] > 200:
+        if enemyData[2] == 'shooter' and TIME - enemyData[3] > 500:
             e.fire(enemyData)
+
     for item in i.currentItems:
         if item['rolled'] == 200:
             item['rolled'] = random.randint(0, 100)
         if e.currentEnemies == []:
             if (item['chance'] >= item['rolled'] and item['screen'] == 0) or item['screen'] == s.currentScreen:
                 item['screen'] = s.currentScreen
-                pygame.draw.rect(WINDOW, COLOURS[item['colour']], item['model'])
+                pygame.draw.rect(
+                    WINDOW, COLOURS[item['colour']], item['model'])
 
     for projectile in p.projectiles:
         pygame.draw.rect(WINDOW, p.projColour, projectile[0])
     for projectile in e.projectiles:
         pygame.draw.rect(WINDOW, e.projColour, projectile[0])
+
     s.drawBorders()
     pygame.draw.rect(WINDOW, p.colour, p.model)
     pygame.draw.rect(WINDOW, COLOURS['RED'], p.healthBarBase)
