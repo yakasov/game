@@ -1,3 +1,13 @@
+1.2 (pre)
++ Added maze randomisation system
+~ Enemy counts are completely random, increasing the further out from spawn you go instead of semi-linearly as before
+- Removed border overrides
+? Bosses will be randomised, ie every screen a boss can spawn, a new one will be randomly created
+? End Boss will be difficult
+? Balance changes to make the game a little more completable
+* Fixed players being able to pick up items before completing the screen
+
+
 1.1
 + Implemented new enemy projectile vector system for better projection
 + Player will now take 10 damage from enemy projectiles

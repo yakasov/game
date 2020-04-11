@@ -2,7 +2,6 @@ import pygame
 import random
 import time
 from dictResolver import *
-from mazeRandomiser import *
 from pygame.locals import *
 pygame.init()
 
@@ -97,27 +96,11 @@ class enemies():
 
         self.enemyStages = ['DEAD', COLOURS['RED'],
                             COLOURS['AQUA'], COLOURS['MAGENTA']]
-        self.enemyCounts = {}
         self.screenCleared = {}
         self.currentEnemies = []
         self.currentBosses = []
         self.lastMovement = 0
         self.enemyUpdatePeriod = 50
-
-    def createEnemyCounts(self):
-        for y in range(0, 8):
-            for x in range(0, 8):
-                if s.lines[y][x] == 1:
-                    if x * y < 9:
-                        e.enemyCounts[(x + 1) * 10 + (y + 1)] = random.randint(2, 6)
-                    elif x * y < 17:
-                        e.enemyCounts[(x + 1) * 10 + (y + 1)] = random.randint(4, 8)
-                    elif x * y < 40:
-                        e.enemyCounts[(x + 1) * 10 + (y + 1)] = random.randint(5, 11)
-                    else:
-                        e.enemyCounts[(x + 1) * 10 + (y + 1)] = random.randint(4, 14)
-                elif s.lines[y][x] == 2:
-                    e.enemyCounts[(x + 1) * 10 + (y + 1)] = 0
 
     def createEnemies(self):
         self.vel = 4 + 0.5 * len(self.screenCleared)
@@ -269,26 +252,24 @@ class items():
                 s.currentScreen, TIME))
 
     def checkItemCollisions(self):
-        if e.currentEnemies == []:
-            for item in self.currentItems:
-                if p.model.colliderect(item['model']):
-                    if 'PLAYER_VELOCITY' in item['attributes']:  # Default 5
-                        p.vel += item['magnitude']
-                    if 'PLAYER_HEALTH' in item['attributes']:  # Default 100
-                        p.healthMax += item['magnitude']
-                        p.health += item['magnitude']
-                    if 'PROJECTILE_VELOCITY' in item['attributes']:  # Default 8
-                        p.projVel += item['magnitude'] * 2
-                    if 'PROJECTILE_RATE' in item['attributes']:  # Default 100
-                        p.projFireRate -= item['magnitude'] * 5
-                    print('Player picked up {} @ {}'.format(item, TIME))
-                    self.currentItems.remove(item)
-                    item['chance'] = 0
+        for item in self.currentItems:
+            if p.model.colliderect(item['model']):
+                if 'PLAYER_VELOCITY' in item['attributes']:  # Default 5
+                    p.vel += item['magnitude']
+                if 'PLAYER_HEALTH' in item['attributes']:  # Default 100
+                    p.healthMax += item['magnitude']
+                    p.health += item['magnitude']
+                if 'PROJECTILE_VELOCITY' in item['attributes']:  # Default 8
+                    p.projVel += item['magnitude'] * 2
+                if 'PROJECTILE_RATE' in item['attributes']:  # Default 100
+                    p.projFireRate -= item['magnitude'] * 5
+                print('Player picked up {} @ {}'.format(item, TIME))
+                self.currentItems.remove(item)
+                item['chance'] = 0
 
 
 class screens():
     def __init__(self):
-        self.lines = []
         self.currentScreen = 11
         self.update = True
 
@@ -307,9 +288,7 @@ class screens():
                                  }
 
     def screenUpdate(self):
-        if s.currentScreen % 10 >= 6:
-            e.colours = COLOURS['MAGENTA']
-        elif s.currentScreen % 10 > 3:
+        if s.currentScreen % 10 > 3:
             e.colour = COLOURS['AQUA']
         else:
             e.colour = COLOURS['RED']
@@ -417,12 +396,11 @@ i = items()
 s = screens()
 d = debug()
 
-s.lines = mazeMaker()
-e.createEnemyCounts()
-
 # Load dictionaries from the 'resources' folder.
 e.bosses = loadDictionaries('bosses')
+e.enemyCounts = loadDictionaries('enemyCounts')
 i.items = loadDictionaries('items')
+s.borderOverrides = loadDictionaries('borderOverrides')
 
 while True:
     pygame.time.delay(round(1000 / FPS))
