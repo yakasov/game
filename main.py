@@ -1,6 +1,7 @@
 import pygame
 import random
 import time
+import numpy
 from dictResolver import *
 from mazeRandomiser import *
 from pygame.locals import *
@@ -97,10 +98,15 @@ class enemies():
 
         self.enemyStages = ['DEAD', COLOURS['RED'],
                             COLOURS['AQUA'], COLOURS['MAGENTA']]
+        self.types = ['base', 'shooter']
+        self.bossData = {
+            'health': 0
+        }
+        self.bossesDefeated = 0
+
         self.enemyCounts = {}
         self.screenCleared = {}
         self.currentEnemies = []
-        self.currentBosses = []
         self.lastMovement = 0
         self.enemyUpdatePeriod = 50
 
@@ -109,13 +115,17 @@ class enemies():
             for x in range(0, 8):
                 if s.lines[y][x] == 1:
                     if x * y < 9:
-                        e.enemyCounts[(x + 1) * 10 + (y + 1)] = random.randint(2, 6)
+                        e.enemyCounts[(x + 1) * 10 + (y + 1)
+                                      ] = random.randint(2, 6)
                     elif x * y < 17:
-                        e.enemyCounts[(x + 1) * 10 + (y + 1)] = random.randint(4, 8)
+                        e.enemyCounts[(x + 1) * 10 + (y + 1)
+                                      ] = random.randint(4, 8)
                     elif x * y < 40:
-                        e.enemyCounts[(x + 1) * 10 + (y + 1)] = random.randint(5, 11)
+                        e.enemyCounts[(x + 1) * 10 + (y + 1)
+                                      ] = random.randint(5, 11)
                     else:
-                        e.enemyCounts[(x + 1) * 10 + (y + 1)] = random.randint(4, 14)
+                        e.enemyCounts[(x + 1) * 10 + (y + 1)
+                                      ] = random.randint(4, 14)
                 elif s.lines[y][x] == 2:
                     e.enemyCounts[(x + 1) * 10 + (y + 1)] = 0
 
@@ -137,16 +147,24 @@ class enemies():
             print('>>> No enemies available for screen {}! @ {}'.format(
                 s.currentScreen, TIME))
 
-        if s.currentScreen in self.bosses and self.bosses[s.currentScreen]['health'] > 0:
+        if self.enemyCounts[s.currentScreen] == 0:
+            self.bossData['health'] = random.randint(
+                25, 40) + (self.bossesDefeated + 1) * 0.5 + len(self.screenCleared)
+            self.bossData['damage'] = len(self.screenCleared) * 4
+            self.bossData['size'] = random.randint(100, 200)
+            self.bossData['velocity'] = random.randint(
+                1, 4) + (len(self.screenCleared) / 10)
+            self.bossData['type'] = self.types[random.randint(
+                0, len(self.types) - 1)]
+            self.bossData['lastFireTime'] = 0
+
+        if self.bossData['health'] > 0:
             self.previousVel = self.vel
-            self.bossData = self.bosses[s.currentScreen]
             self.vel = self.bossData['velocity']
             self.type = self.bossData['type']
             self.boss = pygame.Rect(
                 WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, self.bossData['size'], self.bossData['size'])
             self.currentEnemies.append(
-                [self.boss, COLOURS['RED'], self.type, self.lastFireTime])
-            self.currentBosses.append(
                 [self.boss, COLOURS['RED'], self.type, self.lastFireTime])
 
     def updateEnemies(self):
@@ -155,14 +173,14 @@ class enemies():
             for projectile in p.projectiles:
                 if projectile[0].colliderect(enemy):
                     try:
-                        if enemyData in self.currentBosses:
+                        if self.bossData['health'] > 0:
                             self.bossData['health'] -= 1
                             if self.bossData['health'] <= 0:
                                 self.vel = self.previousVel
                                 p.health += 20
                                 p.updateHealth()
-                                self.currentBosses.remove(enemyData)
                                 self.currentEnemies.remove(enemyData)
+                                self.bossesDefeated += 1
                         else:
                             self.updateHealth(enemyData)
                     except ValueError:
@@ -199,7 +217,7 @@ class enemies():
             enemy = enemyData[0]
             if TIME - p.invulnerabilityTime > 500:
                 if enemy.colliderect(p.model):
-                    if enemyData in self.currentBosses:
+                    if self.bossData['health'] > 0:
                         p.health -= self.bossData['damage']
                         p.invulnerabilityTime = TIME + 500
                     else:
@@ -218,10 +236,8 @@ class enemies():
     def fire(self, enemyData):
         enemy = enemyData[0]
         enemyData[3] = TIME
-        if s.currentScreen in e.bosses:
-            for bossData in e.currentBosses:
-                if enemy == bossData[0]:
-                    bossData[3] = enemyData[3]
+        if self.bossData['health'] > 0:
+            self.bossData['lastFireTime'] = enemyData[3]
         dx = p.model.centerx - enemy.centerx
         dy = p.model.centery - enemy.centery
 
@@ -321,24 +337,14 @@ class screens():
     def drawBorders(self):
         self.bordersToDraw = []
         if e.currentEnemies == []:
-            if self.currentScreen in self.borderOverrides and self.bordersToDraw == []:
-                for letter in self.borderOverrides[self.currentScreen]:
-                    try:
-                        self.bordersToDraw.append(
-                            self.lettersToBorders[letter])
-                    except KeyError:
-                        print(
-                            '>>> Incorrect borders found for screen border override! @ {}'.format(TIME))
-                        pass
-            else:
-                if self.currentScreen + 10 in e.enemyCounts:
-                    self.bordersToDraw.append(self.rightBar)
-                if self.currentScreen - 10 in e.enemyCounts:
-                    self.bordersToDraw.append(self.leftBar)
-                if self.currentScreen + 1 in e.enemyCounts:
-                    self.bordersToDraw.append(self.topBar)
-                if self.currentScreen - 1 in e.enemyCounts:
-                    self.bordersToDraw.append(self.bottomBar)
+            if self.currentScreen + 10 in e.enemyCounts:
+                self.bordersToDraw.append(self.rightBar)
+            if self.currentScreen - 10 in e.enemyCounts:
+                self.bordersToDraw.append(self.leftBar)
+            if self.currentScreen + 1 in e.enemyCounts:
+                self.bordersToDraw.append(self.topBar)
+            if self.currentScreen - 1 in e.enemyCounts:
+                self.bordersToDraw.append(self.bottomBar)
             for bar in self.bordersToDraw:
                 pygame.draw.rect(WINDOW, self.borderColour, bar)
                 self.checkBorderCollisions(bar)
@@ -380,14 +386,14 @@ class debug():
               '\n\nPlayer Health: {}, Velocity: {}\n\n'.format(p.health, p.vel))
 
     def checkBosses(self):
-        if s.currentScreen in e.bosses:
+        if e.bossData['health'] > 0:
             return True
         else:
             return False
 
     def getBossAttributes(self):
-        if s.currentScreen in e.bosses:
-            return e.bosses[s.currentScreen]
+        if e.bossData['health'] > 0:
+            return e.bossData
         else:
             return 'None'
 
@@ -397,6 +403,19 @@ class debug():
             if item['chance'] != 0 or item['screen'] == s.currentScreen:
                 self.returnString += '\n  {}'.format(item)
         return self.returnString
+
+    def commandInput(self):
+        command = input().lower()
+        command = command.split(' ')
+        if 'map' in command:
+            for line in numpy.flip(s.lines, 0):
+                print(line)
+        if 'god' in command:
+            p.healthMax = 10**10
+            p.health = p.healthMax
+        if 'goto' in command:
+            s.currentScreen = int(command[command.index('goto') + 1])
+            s.update = True
 
 
 TIME = 0
@@ -421,7 +440,6 @@ s.lines = mazeMaker()
 e.createEnemyCounts()
 
 # Load dictionaries from the 'resources' folder.
-e.bosses = loadDictionaries('bosses')
 i.items = loadDictionaries('items')
 
 while True:
@@ -432,6 +450,9 @@ while True:
         s.update = False
 
     keys = pygame.key.get_pressed()
+
+    if keys[pygame.K_c]:
+        d.commandInput()
 
     if keys[pygame.K_LEFT] and p.model.left > p.vel:
         p.model.left -= p.vel
@@ -463,6 +484,9 @@ while True:
         pygame.draw.rect(WINDOW, enemyData[1], enemyData[0])
         if enemyData[2] == 'shooter' and TIME - enemyData[3] > 500:
             e.fire(enemyData)
+        if e.bossData['health'] > 0:
+            if TIME - e.bossData['lastFireTime'] > 500:
+                e.fire(enemyData)
 
     for item in i.currentItems:
         if item['rolled'] == 200:

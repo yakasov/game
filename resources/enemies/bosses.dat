@@ -1,9 +1,0 @@
-{
-  33: {
-    'health': 50,
-    'velocity': 3,
-    'size': 150,
-    'damage': 45,
-    'type': 'shooter'
-  },
-}

@@ -1,4 +1,17 @@
-1.2 (pre)
+1.2.1
++ Added enemy count randomisation system
++ Added boss attribute randomisation system
+  Bosses will get harder as the game goes on
++ Added command input, accessible by pressing 'c' in-game (which will pause the game)
+  map: shows the map
+  god: player given a large amount of health
+  goto [screen]: teleport to given screen
+~ Replaced old bossData format with new bossData dictionary format
+- Removed enemyCounts and bosses data files
+* Fixed a bug where borderOverrides was still required when finishing a screen, causing a crash
+
+
+1.2 pre-release
 + Added maze randomisation system
 ~ Enemy counts are completely random, increasing the further out from spawn you go instead of semi-linearly as before
 - Removed border overrides

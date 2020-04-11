@@ -1,13 +1,14 @@
 import random
 import numpy
 
-## PLEASE DO NOT READ ANY OF THIS CODE
-## IT IS HORRIFIC
-## I GAVE UP TRYING TO BE SMART AND MADE A LABYRINTH IN THE WORST WAY POSSIBLE
-## IT LITERALLY BRUTE FORCES ITS WAY THROUGH
-## DO NOT READ THIS CODE!!! IF YOU DO YOU ARE AT RISK OF SUDDEN BRAIN DEATH
+# PLEASE DO NOT READ ANY OF THIS CODE
+# IT IS HORRIFIC
+# I GAVE UP TRYING TO BE SMART AND MADE A LABYRINTH IN THE WORST WAY POSSIBLE
+# IT LITERALLY BRUTE FORCES ITS WAY THROUGH
+# DO NOT READ THIS CODE!!! IF YOU DO YOU ARE AT RISK OF SUDDEN BRAIN DEATH
 
-## YOU HAVE BEEN WARNED
+# YOU HAVE BEEN WARNED
+
 
 def generator(lines):
     for line in lines:
@@ -95,6 +96,7 @@ def solver(invertedLines):
             x = prevX
             y = prevY
 
+
 def mazeMaker():
     while True:
         lines = [1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -111,4 +113,4 @@ def mazeMaker():
 
         if passes == True:
             break
-    return lines
+    return numpy.asarray(lines)

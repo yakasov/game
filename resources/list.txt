@@ -1,7 +1,5 @@
 # REQUIRED:
 colours.dat
-enemies/bosses.dat
-enemies/enemyCounts.dat # 
 items/items.dat
 #
 # Using a hash anywhere in a line will disable the data file and it will not be used
