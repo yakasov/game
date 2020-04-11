@@ -1,3 +1,28 @@
+1.3
++ Added current screen counter to top-left corner
++ Added score counter to top-right corner
++ Added health bar to bosses
++ Added basic comments at some points in code
+~ Actually changed AQUA PLAYER_VELOCITY item from magnitude 2 to 1
+~ Starting screen no longer spawns enemies
+~ Starting screen no longer spawns items
+~ Changed enemy stage spawning logic
+  If X or Y > 3, enemy = aqua
+  If X or Y > 6, enemy = magenta
+~ Decreased enemy velocity increase on screen clear
+~ Updated debug messages to better reflect new updates
+- Removed screen specific items in the items data file
+* Fixed boss rooms respawning bosses when returning to them
+* Fixed magenta stage of enemies not spawning
+* Fixed screens with X or Y co-ordinates of 9 not generating and therefore not being accessible
+
+? Add End Boss
+? Add more items
+? Add events
+? Add special rooms, NPCs? Messages?
+? At some point, rework items.dat to not need 0:
+
+
 1.2.1
 + Added enemy count randomisation system
 + Added boss attribute randomisation system
@@ -15,10 +40,11 @@
 + Added maze randomisation system
 ~ Enemy counts are completely random, increasing the further out from spawn you go instead of semi-linearly as before
 - Removed border overrides
+* Fixed players being able to pick up items before completing the screen
+
 ? Bosses will be randomised, ie every screen a boss can spawn, a new one will be randomly created
 ? End Boss will be difficult
 ? Balance changes to make the game a little more completable
-* Fixed players being able to pick up items before completing the screen
 
 
 1.1

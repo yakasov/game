@@ -21,5 +21,3 @@ with open('resources/list.txt', 'r') as list:
     for line in list:
         if '#' not in line:
             dataLocations.append('resources/' + line.strip('\n'))
-
-print(dataLocations)
