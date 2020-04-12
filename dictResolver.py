@@ -17,7 +17,7 @@ def cRC(limit): ## createRandomCoordinates
     return random.randint(limit / 10, limit - 4 * borderSize)
 
 dataLocations = []
-with open('resources/list.txt', 'r') as list:
-    for line in list:
+with open('resources/list.txt', 'r') as locationList:
+    for line in locationList:
         if '#' not in line:
             dataLocations.append('resources/' + line.strip('\n'))

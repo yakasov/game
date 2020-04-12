@@ -36,7 +36,7 @@ def checker(lines):
             try:
                 if (line[i - 1] + line[i + 1] + lines[lines.index(line) - 1][i] + lines[lines.index(line) + 1][i]) == 0:
                     line[i] = 0
-            except:
+            except IndexError:
                 pass
 
     return lines
@@ -49,7 +49,7 @@ def patcher(lines):
                 if line[i] == 0:
                     if (line[i - 1] + line[i + 1] + lines[lines.index(line) - 1][i] + lines[lines.index(line) + 1][i]) > 2:
                         line[i] = 1
-            except:
+            except IndexError:
                 pass
 
     return lines

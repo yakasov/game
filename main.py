@@ -285,7 +285,7 @@ class items():
                         item['rolled'] = 200
             except KeyError:
                 print('>>> No items found with all screen spawns! @ {}'.format(TIME))
-                pass
+
             try:
                 for item in self.items[s.currentScreen]:
                     if item['chance'] != 0:
@@ -415,16 +415,11 @@ class debug():
               '\n\nPlayer Health: {}, Velocity: {}\n\n'.format(p.health, p.vel))
 
     def checkBosses(self):
-        if e.bossData['health'] > 0:
-            return True
-        else:
-            return False
+        return bool(e.bossData['health'] > 0)
 
     def getBossAttributes(self):
         if e.bossData['health'] > 0:
             return e.bossData
-        else:
-            return 'None'
 
     def getItemAttributes(self):
         self.returnString = ''
@@ -454,6 +449,7 @@ FPSCLOCK = pygame.time.Clock()
 WINDOW_WIDTH = 500
 WINDOW_HEIGHT = 500
 WINDOW = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT + 40))
+pygame.display.set_caption('Yaka\'s Game!')
 
 LARGE_FONT = pygame.font.SysFont('consolas', 64)
 NORMAL_FONT = pygame.font.SysFont('consolas', 32)
@@ -473,7 +469,7 @@ i.items = loadDictionaries('items')
 while True:
     pygame.time.delay(round(1000 / FPS))
 
-    if s.update == True:
+    if s.update:
         s.screenUpdate()
         s.update = False
 
