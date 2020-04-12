@@ -12,7 +12,7 @@ import numpy
 
 def generator(lines):
     for line in lines:
-        for i in range(len(line)):
+        for i, cell in enumerate(line):
             requirement = random.randint(0, 100)
             result = random.randint(0, 80)
 
@@ -32,7 +32,7 @@ def generator(lines):
 
 def checker(lines):
     for line in lines:
-        for i in range(len(line)):
+        for i, cell in enumerate(line):
             try:
                 if (line[i - 1] + line[i + 1] + lines[lines.index(line) - 1][i] + lines[lines.index(line) + 1][i]) == 0:
                     line[i] = 0
@@ -44,7 +44,7 @@ def checker(lines):
 
 def patcher(lines):
     for line in lines:
-        for i in range(len(line)):
+        for i, cell in enumerate(line):
             try:
                 if line[i] == 0:
                     if (line[i - 1] + line[i + 1] + lines[lines.index(line) - 1][i] + lines[lines.index(line) + 1][i]) > 2:
@@ -100,7 +100,7 @@ def solver(invertedLines):
 def mazeMaker():
     while True:
         lines = [1, 2, 3, 4, 5, 6, 7, 8, 9]
-        for i in range(len(lines)):
+        for i, cell in enumerate(lines):
             lines[i] = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 
         lines = generator(lines)
@@ -111,6 +111,6 @@ def mazeMaker():
         invertedLines = invert(lines)
         passes = solver(invertedLines)
 
-        if passes == True:
+        if passes:
             break
     return numpy.asarray(lines)
