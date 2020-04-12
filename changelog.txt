@@ -1,3 +1,20 @@
+1.4
++ Chance for items to spawn is doubled when defeating a boss
++ Enemies will no longer merge together
+~ Updated items.dat to remove items being linked to certain screens
+~ AQUA PLAYER_VELOCITY item no longer increases PROJECTILE_VELOCITY
+~ Screen and score displays are rendered above the player
+~ Enemies now spawn closer to the centre of the screen
+~ Enemies are now stored in dictionary format rather than array format
+* Fixed a bug where items could spawn in already cleared screens
+* Fixed a bug where items that have already spawned would not persist in their spawned screen
+* Fixed a bug where items could be picked up before their model spawned in
+* Fixed a bug where all items could be removed by entering an empty room
+* Fixed a bug where items could respawn if not picked up
+* Fixed debug printing not printing out items on some occasions
+* Fixed bosses having higher colours than red
+
+
 1.3.2
 * Small little changes for better code practise
 

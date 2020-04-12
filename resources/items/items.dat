@@ -1,24 +1,23 @@
-{
-  0: [{
-      'colour': 'AQUA',
-      'model': pygame.Rect(cRC(WINDOW_WIDTH), cRC(WINDOW_HEIGHT), 5, 5),
-      'attributes': 'PLAYER_VELOCITY PROJECTILE_RATE',
-      'magnitude': 1,
-      'chance': 5,
-      'rolled': False,
-      'screen': 0
-    },
-    {
-      'colour': 'MAGENTA',
-      'model': pygame.Rect(cRC(WINDOW_WIDTH), cRC(WINDOW_HEIGHT), 5, 5),
-      'attributes': 'PROJECTILE_VELOCITY',
-      'magnitude': 1,
-      'chance': 10,
-      'rolled': False,
-      'screen': 0
-    }
-  ]
-}
+[{
+    'colour': 'AQUA',
+    'model': pygame.Rect(cRC(WINDOW_WIDTH), cRC(WINDOW_HEIGHT), 5, 5),
+    'attributes': 'PLAYER_VELOCITY',
+    'magnitude': 1,
+    'chance': 5,
+    'rolled': False,
+    'screen': 0
+  },
+  {
+    'colour': 'MAGENTA',
+    'model': pygame.Rect(cRC(WINDOW_WIDTH), cRC(WINDOW_HEIGHT), 5, 5),
+    'attributes': 'PROJECTILE_VELOCITY',
+    'magnitude': 1,
+    'chance': 10,
+    'rolled': False,
+    'screen': 0
+  }
+]
+
 
 # Changeable values
 
