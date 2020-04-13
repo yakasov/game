@@ -1,3 +1,20 @@
+? Add End Boss
+? Add more items
+? Add events
+? Add special rooms, NPCs? Messages?
+
+
+1.4.1
++ Added exception handling for incorrect command usage
++ Added extra information to items.dat
++ Every kill now restores 1 HP
++ Velocity is increased when moving through cleared screens
++ Bosses now fire faster than normal enemies
++ Enemies will fire faster as more screens are cleared
+~ Slightly decreased normal player velocity
+* Fixed enemy projFireRate not being used
+
+
 1.4
 + Chance for items to spawn is doubled when defeating a boss
 + Enemies will no longer merge together
@@ -41,12 +58,6 @@
 * Fixed boss rooms respawning bosses when returning to them
 * Fixed magenta stage of enemies not spawning
 * Fixed screens with X or Y co-ordinates of 9 not generating and therefore not being accessible
-
-? Add End Boss
-? Add more items
-? Add events
-? Add special rooms, NPCs? Messages?
-? At some point, rework items.dat to not need 0:
 
 
 1.2.1
