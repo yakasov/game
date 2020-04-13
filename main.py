@@ -210,17 +210,17 @@ class enemies():
                             '>>> Too many projectiles causing too many enemy kills! @ {}'.format(TIME))
                     p.projectiles.remove(projectile)
 
-            self.updateEnemyPos()
-
-            if TIME - self.lastMovement > self.enemyUpdatePeriod:
-                self.lastMovement = TIME
+            self.updateEnemyPos(enemy)
 
             if self.currentEnemies == []:
                 self.enemyCounts[s.currentScreen] = 0
                 self.screenCleared[s.currentScreen] = True
 
-    def updateEnemyPos(self):
-        if TIME - self.lastMovement > self.enemyUpdatePeriod:  # Move towards player
+        if TIME - self.lastMovement > self.enemyUpdatePeriod:
+            self.lastMovement = TIME
+
+    def updateEnemyPos(self, enemy):
+        if TIME - self.lastMovement > self.enemyUpdatePeriod:
             for otherEnemy in self.currentEnemies:
                 if enemy['model'].colliderect(otherEnemy['model']) and enemy['model'] != otherEnemy['model']:
                     otherEnemy['canMove'] = False
