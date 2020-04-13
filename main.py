@@ -113,10 +113,12 @@ class enemies():
         self.bossJustCleared = 0
 
         self.enemyCounts = {}
-        self.screenCleared = {}
+        self.screenCleared = {
+            11: True
+        }
         self.currentEnemies = []
-        self.lastMovement = 0  # Time when the enemy['model'] last moved
-        # How long the enemy['model'] must wait before moving again
+        self.lastMovement = 0  # Time when the enemy last moved
+        # How long the enemy must wait before moving again
         self.enemyUpdatePeriod = 50
 
     def createEnemyCounts(self):
@@ -140,10 +142,10 @@ class enemies():
 
         e.enemyCounts[11] = 0
         e.enemyCounts[99] = 0
-        # Spawn and end must have 0 enemy['model'] counts
+        # Spawn and end must have 0 enemy counts
 
     def createEnemies(self):
-        self.vel = 4 + 0.33 * len(self.screenCleared)
+        self.vel = 4 + 0.25 * len(self.screenCleared)
 
         self.currentEnemies = []
         self.newEnemy = {}
@@ -166,7 +168,7 @@ class enemies():
                 self.currentEnemies.append(self.newEnemy)
 
             if self.enemyCounts[s.currentScreen] == 0 and not s.currentScreen in self.screenCleared and s.currentScreen != 11:
-                self.projFireRate = 50 - 0.5 * len(self.screenCleared)
+                self.projFireRate = 50 - (0.5 * len(self.screenCleared))
                 self.boss['health'] = random.randint(
                     25, 40) + (self.bossesDefeated + 1) * 0.5 + len(self.screenCleared)
                 self.boss['healthMax'] = self.boss['health']
@@ -256,7 +258,7 @@ class enemies():
                         p.health -= self.boss['damage']
                         p.invulnerabilityTime = TIME + 500
                     else:
-                        p.health -= 20
+                        p.health -= 15
                         p.invulnerabilityTime = TIME
                 p.updateHealth()
 
@@ -334,6 +336,7 @@ class screens():
         self.update = True
 
         self.borderColour = (51, 51, 51)
+        self.clearedColour = (102, 204, 102)
         self.borderSize = 10
         self.topBar = pygame.Rect(0, 0, WINDOW_WIDTH, self.borderSize)
         self.bottomBar = pygame.Rect(
@@ -365,16 +368,20 @@ class screens():
         self.bordersToDraw = []
         if e.currentEnemies == []:
             if self.currentScreen + 10 in e.enemyCounts:
-                self.bordersToDraw.append(self.rightBar)
+                self.bordersToDraw.append([self.rightBar, self.currentScreen + 10])
             if self.currentScreen - 10 in e.enemyCounts:
-                self.bordersToDraw.append(self.leftBar)
+                self.bordersToDraw.append([self.leftBar, self.currentScreen -10])
             if self.currentScreen + 1 in e.enemyCounts:
-                self.bordersToDraw.append(self.topBar)
+                self.bordersToDraw.append([self.topBar, self.currentScreen + 1])
             if self.currentScreen - 1 in e.enemyCounts:
-                self.bordersToDraw.append(self.bottomBar)
+                self.bordersToDraw.append([self.bottomBar, self.currentScreen -1])
+
             for bar in self.bordersToDraw:
-                pygame.draw.rect(WINDOW, self.borderColour, bar)
-                self.checkBorderCollisions(bar)
+                if bar[1] in e.screenCleared:
+                    pygame.draw.rect(WINDOW, self.clearedColour, bar[0])
+                else:
+                    pygame.draw.rect(WINDOW, self.borderColour, bar[0])
+                self.checkBorderCollisions(bar[0])
 
     def drawScreenNo(self):
         screenText = NORMAL_FONT.render(
