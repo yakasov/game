@@ -324,6 +324,7 @@ class items():
                     print('Player picked up {} @ {}'.format(item, TIME))
                     self.currentItems.remove(item)
                     item['chance'] = 0
+                    item['screen'] = 0
 
 
 class screens():
@@ -559,13 +560,15 @@ while True:
     for projectile in e.projectiles:
         pygame.draw.rect(WINDOW, e.projColour, projectile[0])
 
+    # ORDER: Bottom --> Top
+    # eg screenNo overlays player overlays borders
     s.drawBorders()
     pygame.draw.rect(WINDOW, p.colour, p.model)
     s.drawScreenNo()
     s.drawScore()
     pygame.draw.rect(WINDOW, COLOURS['RED'], p.healthBarBase)
-    pygame.draw.rect(WINDOW, COLOURS['GREEN'], p.healthBar)
     p.checkHealth()
+    pygame.draw.rect(WINDOW, COLOURS['GREEN'], p.healthBar)
     pygame.display.update()
 
     FPSCLOCK.tick(FPS)

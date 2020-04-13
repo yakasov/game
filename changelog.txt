@@ -4,6 +4,11 @@
 ? Add special rooms, NPCs? Messages?
 
 
+1.4.3
+* Fixed a bug where items could be infinitely picked up
+* Health should now be updated more accurately
+
+
 1.4.2
 ~ Added new enemy method, updateEnemyPos() specifically for updating enemy positions
 
@@ -83,21 +88,17 @@
 - Removed border overrides
 * Fixed players being able to pick up items before completing the screen
 
-? Bosses will be randomised, ie every screen a boss can spawn, a new one will be randomly created
-? End Boss will be difficult
-? Balance changes to make the game a little more completable
-
 
 1.1
 + Implemented new enemy projectile vector system for better projection
 + Player will now take 10 damage from enemy projectiles
 + Added run.bat which will install pygame and run the game from the command line
++ Added error handling when exception caught when removing enemy projectiles
 ~ Changed AQUA PLAYER_VELOCITY item from magnitude 2 to 1
 ~ Beautified all .dat files using JSON settings (Ctrl-J, keymap = 'ctrl-j': 'atom-beautify:beautify-language-json')
 ~ Beautifed all .py files using Python settings (Ctrl-K, keymap = 'ctrl-k': 'atom-beautify:beautify-language-python')
 * Fixed enemy stages permanently increasing when passing Y 3
 * Fixed health not updating unless taking damage
-* Added error handling when exception caught when removing enemy projectiles
 * Fixed bosses only having 1 health due to change in enemy data structure
 * Fixed screen-specific items persisting after pickup
 
