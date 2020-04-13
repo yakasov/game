@@ -210,29 +210,32 @@ class enemies():
                             '>>> Too many projectiles causing too many enemy kills! @ {}'.format(TIME))
                     p.projectiles.remove(projectile)
 
-            if TIME - self.lastMovement > self.enemyUpdatePeriod:  # Move towards player
-                for otherEnemy in self.currentEnemies:
-                    if enemy['model'].colliderect(otherEnemy['model']) and enemy['model'] != otherEnemy['model']:
-                        otherEnemy['canMove'] = False
+            self.updateEnemyPos()
 
-                if enemy['canMove']:
-                    if enemy['model'].centerx < p.model.centerx:
-                        enemy['model'].centerx += self.vel
-                    else:
-                        enemy['model'].centerx -= self.vel
-                    if enemy['model'].centery < p.model.centery:
-                        enemy['model'].centery += self.vel
-                    else:
-                        enemy['model'].centery -= self.vel
+            if TIME - self.lastMovement > self.enemyUpdatePeriod:
+                self.lastMovement = TIME
 
-            enemy['canMove'] = True
+            if self.currentEnemies == []:
+                self.enemyCounts[s.currentScreen] = 0
+                self.screenCleared[s.currentScreen] = True
 
-        if TIME - self.lastMovement > self.enemyUpdatePeriod:
-            self.lastMovement = TIME
+    def updateEnemyPos(self):
+        if TIME - self.lastMovement > self.enemyUpdatePeriod:  # Move towards player
+            for otherEnemy in self.currentEnemies:
+                if enemy['model'].colliderect(otherEnemy['model']) and enemy['model'] != otherEnemy['model']:
+                    otherEnemy['canMove'] = False
 
-        if self.currentEnemies == []:
-            self.enemyCounts[s.currentScreen] = 0
-            self.screenCleared[s.currentScreen] = True
+            if enemy['canMove']:
+                if enemy['model'].centerx < p.model.centerx:
+                    enemy['model'].centerx += self.vel
+                else:
+                    enemy['model'].centerx -= self.vel
+                if enemy['model'].centery < p.model.centery:
+                    enemy['model'].centery += self.vel
+                else:
+                    enemy['model'].centery -= self.vel
+
+        enemy['canMove'] = True
 
     def updateHealth(self, enemy):  # Called when an enemy is hit
         enemy['colour'] = self.enemyStages[self.enemyStages.index(

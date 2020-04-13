@@ -4,6 +4,10 @@
 ? Add special rooms, NPCs? Messages?
 
 
+1.4.2
+~ Added new enemy method, updateEnemyPos() specifically for updating enemy positions
+
+
 1.4.1
 + Added exception handling for incorrect command usage
 + Added extra information to items.dat
