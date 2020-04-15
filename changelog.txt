@@ -5,6 +5,10 @@
 
 ================================================================================
 
+1.5.1
++ Added ignore rule to .pylintrc
+* Fixed a line being missing in the changelog
+
 1.5
 + If an item is on a previous cleared screen, the border to it will appear gold instead of the default grey
 + Added a new command:
@@ -27,6 +31,7 @@
 ~ Changed dictResolver.py to fileResolver.py
   Can now process .txt files using loadTxt()
 - Removed the disclaimer in mazeRandomiser.py
+* Fixed boss fire rate being equal to normal enemy fire rate
 * Fixed 'goto' command not generating enemies / bosses
 
 ================================================================================

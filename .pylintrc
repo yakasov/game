@@ -1,1 +1,1 @@
-disable=wildcard-import
+disable=wildcard-import, too-complex
