@@ -2,7 +2,7 @@
     'colour': 'AQUA',
     'model': pygame.Rect(cRC(WINDOW_WIDTH), cRC(WINDOW_HEIGHT), 5, 5),
     'attributes': 'PLAYER_VELOCITY',
-    'magnitude': 1,
+    'magnitude': 1.5,
     'chance': 5,
     'rolled': False,
     'screen': 0
@@ -12,7 +12,7 @@
     'model': pygame.Rect(cRC(WINDOW_WIDTH), cRC(WINDOW_HEIGHT), 5, 5),
     'attributes': 'PROJECTILE_VELOCITY',
     'magnitude': 1,
-    'chance': 10,
+    'chance': 8,
     'rolled': False,
     'screen': 0
   }

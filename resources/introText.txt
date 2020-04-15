@@ -1,0 +1,17 @@
+================================================================================
+
+Welcome to my game! :)
+
+CONTROLS:
+Arrow Keys: movement
+WASD: shooting direction
+C: enter command
+   This will pause your game - if you do this by accident,
+   click onto the console and press ENTER.
+
+You start at screen 11. The goal is to reach screen 99.
+The first digit is your X co-ordinate, and the second your Y.
+
+Good luck!
+
+================================================================================

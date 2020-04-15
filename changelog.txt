@@ -5,6 +5,32 @@
 
 ================================================================================
 
+1.5
++ If an item is on a previous cleared screen, the border to it will appear gold instead of the default grey
++ Added a new command:
+  genmap [int]: generates maps in console [int] times
++ Pressing 'x' will print debug info at any point
+  Debug info still prints when entering a screen
++ Bosses now fire projectiles with a degree of randomness to make them harder to dodge
++ Added intro text to console on game startup
+  Debug info is no longer printed on screen 11
++ Added proper file process termination when files have finished being used.
+~ Player projectile fire rate decreased to 6/s (from 10/s)
+~ Player velocity increased to 4.5 (270u/s) (from 4 (240u/s))
+~ Projectile velocity decreased to 6 (320u/s) (from 8 (480u/s))
+~ AQUA PLAYER_VELOCITY item magnitude increased to 1.5 (from 1) - this equates to a 90u/s bonus
+~ MAGENTA PROJECTILE_VELOCITY item chance decreased to 8% (from 10%)
+~ Boss base health decreased from 15 -> 30 (from 25 -> 40)
+~ Boss projectile fire rate is now a constant 20/s
+~ Simplified map generation process
+  Map layouts may feel more random
+~ Changed dictResolver.py to fileResolver.py
+  Can now process .txt files using loadTxt()
+- Removed the disclaimer in mazeRandomiser.py
+* Fixed 'goto' command not generating enemies / bosses
+
+================================================================================
+
 1.4.4
 + If a screen has been cleared, the border to it will appear green instead of the default grey
 + Nicer changelog.txt formatting

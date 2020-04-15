@@ -2,7 +2,7 @@ import pygame
 import random
 import time
 import numpy
-from dictResolver import *
+from fileResolver import *
 from mazeRandomiser import *
 from pygame.locals import *
 pygame.init()
@@ -17,15 +17,15 @@ class player():
         self.model = pygame.Rect(25, 40, self.modelWidth, self.modelHeight)
         self.colour = COLOURS['WHITE']
         self.vel = 0
-        self.normalVel = 4
+        self.normalVel = 4.5
         self.clearedVel = 7
 
         self.score = 0
 
         self.projectiles = []
-        self.projVel = 8
+        self.projVel = 6
         self.projColour = COLOURS['WHITE']
-        self.projFireRate = 100  # How long the player must wait before firing again
+        self.projFireRate = 166  # How long the player must wait before firing again
         self.lastFireTime = 0
 
         self.health = 100
@@ -101,13 +101,15 @@ class enemies():
         # How long the enemy['model'] must wait before firing again
         self.projFireRate = 500
         # This is a default and can differ between enemies
+        self.bossProjFireRate = 50
         self.lastFireTime = 0
 
         self.enemyStages = ['DEAD', COLOURS['RED'],
                             COLOURS['AQUA'], COLOURS['MAGENTA']]
         self.types = ['base', 'shooter']
         self.boss = {
-            'health': 0
+            'health': 0,
+            'lastFireTime': 10**10
         }  # Initialise boss dictionary for use in createEnemies()
         self.bossesDefeated = 0
         self.bossJustCleared = 0
@@ -167,10 +169,10 @@ class enemies():
                 self.newEnemy['canMove'] = True
                 self.currentEnemies.append(self.newEnemy)
 
-            if self.enemyCounts[s.currentScreen] == 0 and not s.currentScreen in self.screenCleared and s.currentScreen != 11:
-                self.projFireRate = 50 - (0.5 * len(self.screenCleared))
+            if self.enemyCounts[s.currentScreen] == 0 and not s.currentScreen in self.screenCleared:
+                self.previousVel = self.vel
                 self.boss['health'] = random.randint(
-                    25, 40) + (self.bossesDefeated + 1) * 0.5 + len(self.screenCleared)
+                    15, 30) + (self.bossesDefeated + 1) * 0.5 + len(self.screenCleared)
                 self.boss['healthMax'] = self.boss['health']
                 self.boss['damage'] = len(self.screenCleared) * 4
                 self.boss['size'] = random.randint(100, 200)
@@ -181,7 +183,6 @@ class enemies():
                 self.boss['lastFireTime'] = 0
 
             if self.boss['health'] > 0:
-                self.previousVel = self.vel
                 self.vel = self.boss['velocity']
                 self.type = self.boss['type']
                 self.boss['model'] = pygame.Rect(
@@ -214,7 +215,7 @@ class enemies():
 
             self.updateEnemyPos(enemy)
 
-            if self.currentEnemies == []:
+            if self.currentEnemies == [] and self.boss['health'] <= 0:
                 self.enemyCounts[s.currentScreen] = 0
                 self.screenCleared[s.currentScreen] = True
 
@@ -272,10 +273,12 @@ class enemies():
 
     def fire(self, enemy):
         enemy['lastFireTime'] = TIME
-        if self.boss['health'] > 0:
-            self.boss['lastFireTime'] = enemy['lastFireTime']
         dx = p.model.centerx - enemy['model'].centerx
         dy = p.model.centery - enemy['model'].centery
+        if self.boss['health'] > 0:
+            self.boss['lastFireTime'] = enemy['lastFireTime']
+            dx += random.randint(-100, 100)
+            dy += random.randint(-100, 100)
 
         self.newProjectile = pygame.Rect(
             enemy['model'].centerx, enemy['model'].centery, 3, 3)
@@ -337,6 +340,7 @@ class screens():
 
         self.borderColour = (51, 51, 51)
         self.clearedColour = (102, 204, 102)
+        self.leftItemColour = (255, 215, 0)
         self.borderSize = 10
         self.topBar = pygame.Rect(0, 0, WINDOW_WIDTH, self.borderSize)
         self.bottomBar = pygame.Rect(
@@ -362,25 +366,35 @@ class screens():
 
         i.checkCurrentScreenItems()
         e.createEnemies()
-        d.printInfo()
+        if s.currentScreen != 11:
+            d.printInfo()
 
     def drawBorders(self):
         self.bordersToDraw = []
         if e.currentEnemies == []:
             if self.currentScreen + 10 in e.enemyCounts:
-                self.bordersToDraw.append([self.rightBar, self.currentScreen + 10])
+                self.bordersToDraw.append(
+                    [self.rightBar, self.currentScreen + 10])
             if self.currentScreen - 10 in e.enemyCounts:
-                self.bordersToDraw.append([self.leftBar, self.currentScreen -10])
+                self.bordersToDraw.append(
+                    [self.leftBar, self.currentScreen - 10])
             if self.currentScreen + 1 in e.enemyCounts:
-                self.bordersToDraw.append([self.topBar, self.currentScreen + 1])
+                self.bordersToDraw.append(
+                    [self.topBar, self.currentScreen + 1])
             if self.currentScreen - 1 in e.enemyCounts:
-                self.bordersToDraw.append([self.bottomBar, self.currentScreen -1])
+                self.bordersToDraw.append(
+                    [self.bottomBar, self.currentScreen - 1])
 
             for bar in self.bordersToDraw:
                 if bar[1] in e.screenCleared:
                     pygame.draw.rect(WINDOW, self.clearedColour, bar[0])
                 else:
                     pygame.draw.rect(WINDOW, self.borderColour, bar[0])
+
+                for item in i.items:
+                    if bar[1] == item['screen']:
+                        pygame.draw.rect(WINDOW, self.leftItemColour, bar[0])
+
                 self.checkBorderCollisions(bar[0])
 
     def drawScreenNo(self):
@@ -462,6 +476,9 @@ class debug():
             if 'goto' in command:
                 s.currentScreen = int(command[command.index('goto') + 1])
                 s.update = True
+            if 'genmap' in command:
+                for i in range(int(command[command.index('genmap') + 1])):
+                    mazeMaker('print')
         except IndexError:
             print('Invalid syntax.')
 
@@ -485,10 +502,13 @@ i = items()
 s = screens()
 d = debug()
 
-s.lines = mazeMaker()
+s.lines = mazeMaker(None)
 e.createEnemyCounts()
 
 i.items = loadDictionaries('items')
+introText = loadTxt('resources/introText.txt')
+
+print(introText)
 
 while True:
     pygame.time.delay(round(1000 / FPS))
@@ -501,6 +521,8 @@ while True:
 
     if keys[pygame.K_c]:
         d.commandInput()
+    if keys[pygame.K_x]:
+        d.printInfo()
 
     if keys[pygame.K_LEFT] and p.model.left > p.vel:
         p.model.left -= p.vel
@@ -535,7 +557,7 @@ while True:
     WINDOW.fill(COLOURS['BLACK'])
     for enemy in e.currentEnemies:
         pygame.draw.rect(WINDOW, enemy['colour'], enemy['model'])
-        if enemy['type'] == 'shooter' and TIME - enemy['lastFireTime'] > e.projFireRate:
+        if (enemy['type'] == 'shooter' and TIME - enemy['lastFireTime'] > e.projFireRate) or (e.boss['health'] > 0 and TIME - e.boss['lastFireTime'] > e.bossProjFireRate):
             e.fire(enemy)
         if e.boss['health'] > 0:
             e.healthBarBase = pygame.Rect(

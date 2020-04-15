@@ -1,14 +1,6 @@
 import random
 import numpy
 
-# PLEASE DO NOT READ ANY OF THIS CODE
-# IT IS HORRIFIC
-# I GAVE UP TRYING TO BE SMART AND MADE A LABYRINTH IN THE WORST WAY POSSIBLE
-# IT LITERALLY BRUTE FORCES ITS WAY THROUGH
-# DO NOT READ THIS CODE!!! IF YOU DO YOU ARE AT RISK OF SUDDEN BRAIN DEATH
-
-# YOU HAVE BEEN WARNED
-
 
 def generator(lines):
     for line in lines:
@@ -26,18 +18,6 @@ def generator(lines):
     lines[8][0] = 1
     lines[8][1] = 1
     lines[0][8] = 3
-
-    return lines
-
-
-def checker(lines):
-    for line in lines:
-        for i, cell in enumerate(line):
-            try:
-                if (line[i - 1] + line[i + 1] + lines[lines.index(line) - 1][i] + lines[lines.index(line) + 1][i]) == 0:
-                    line[i] = 0
-            except IndexError:
-                pass
 
     return lines
 
@@ -89,22 +69,19 @@ def solver(invertedLines):
             y += 1
 
         if x == 8 and y == 8:
-            for line in invertedLines:
-                return True
-            break
+            return True
         elif invertedLines[y][x] == 1:
             x = prevX
             y = prevY
 
 
-def mazeMaker():
+def mazeMaker(state):
     while True:
         lines = [1, 2, 3, 4, 5, 6, 7, 8, 9]
         for i, cell in enumerate(lines):
             lines[i] = [0, 0, 0, 0, 0, 0, 0, 0, 0]
 
         lines = generator(lines)
-        lines = checker(lines)
         lines = patcher(lines)
         lines = numpy.flip(lines, 0)
 
@@ -112,5 +89,9 @@ def mazeMaker():
         passes = solver(invertedLines)
 
         if passes:
-            break
-    return numpy.asarray(lines)
+            lines = numpy.asarray(lines)
+            if state == 'print':
+                print('\n')
+                for line in lines:
+                    print(line)
+            return lines

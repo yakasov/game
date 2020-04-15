@@ -11,10 +11,19 @@ def loadDictionaries(substring):
 
     try:
         with open(dataLocations[indice[0]], 'r') as dictionary:
-            return eval(dictionary.read())
+            result = eval(dictionary.read())
+            dictionary.close()
+            return result
     except IndexError:
         print('Nothing enumerable, skipping...\nPlease replace empty lines with a #!')
 
+
+def loadTxt(location):
+    with open(location, 'r') as file:
+        result = file.read()
+        file.close()
+        return result
+        
 
 def cRC(limit):  # createRandomCoordinates
     return random.randint(limit / 10, limit - 4 * borderSize)
@@ -25,3 +34,4 @@ with open('resources/list.txt', 'r') as locationList:
     for line in locationList:
         if '#' not in line:
             dataLocations.append('resources/' + line.strip('\n'))
+locationList.close()
