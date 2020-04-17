@@ -5,6 +5,17 @@
 
 ================================================================================
 
+1.6
++ Added a new class, render()
+~ All functions involved in drawing objects have been moved to render()
+~ Some code split into smaller functions
+* Fixed invulnerability not stopping projectile damage
+* Fixed incorrect change note:
+  '~ Projectile velocity decreased to 6 (320u/s) (from 8 (480u/s))', Version 1.5
+  New velocity is 360u/s, not 320u/s
+
+================================================================================
+
 1.5.1
 + Added ignore rule to .pylintrc
 * Fixed a line being missing in the changelog
