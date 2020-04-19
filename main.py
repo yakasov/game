@@ -2,12 +2,11 @@ import pygame
 import random
 import time
 import numpy
+from resources.colours import *
 from fileResolver import *
 from mazeRandomiser import *
 from pygame.locals import *
 pygame.init()
-
-COLOURS = loadDictionaries('colours')
 
 
 class player():
@@ -15,7 +14,7 @@ class player():
         self.modelWidth = 15
         self.modelHeight = 15
         self.model = pygame.Rect(25, 40, self.modelWidth, self.modelHeight)
-        self.colour = COLOURS['WHITE']
+        self.colour = WHITE
         self.vel = 0
         self.normalVel = 4.5
         self.clearedVel = 7
@@ -24,7 +23,7 @@ class player():
 
         self.projectiles = []
         self.projVel = 6
-        self.projColour = COLOURS['WHITE']
+        self.projColour = WHITE
         self.projFireRate = 166  # How long the player must wait before firing again
         self.lastFireTime = 0
 
@@ -58,7 +57,7 @@ class player():
             time.sleep(0.0512)
 
         gameOverText = LARGE_FONT.render(
-            'Game Over', True, COLOURS['BLACK'], COLOURS['WHITE'])
+            'Game Over', True, BLACK, WHITE)
         textBox = gameOverText.get_rect()
         textBox.center = (WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2)
         WINDOW.blit(gameOverText, textBox)
@@ -99,20 +98,20 @@ class enemies():
     def __init__(self):
         self.modelWidth = 14
         self.modelHeight = 20
-        self.colour = COLOURS['RED']
+        self.colour = RED
         self.vel = 4
 
         self.projectiles = []
         self.projVel = 6
-        self.projColour = COLOURS['RED']
+        self.projColour = RED
         # How long the enemy['model'] must wait before firing again
         self.projFireRate = 500
         # This is a default and can differ between enemies
         self.bossProjFireRate = 50
         self.lastFireTime = 0
 
-        self.enemyStages = ['DEAD', COLOURS['RED'],
-                            COLOURS['AQUA'], COLOURS['MAGENTA']]
+        self.enemyStages = ['DEAD', RED,
+                            AQUA, MAGENTA]
         self.types = ['base', 'shooter']
         self.boss = {
             'health': 0,
@@ -193,7 +192,7 @@ class enemies():
             1, 4) + (len(self.screenCleared) / 10)
         self.boss['model'] = pygame.Rect(
             WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, self.boss['size'], self.boss['size'])
-        self.boss['colour'] = COLOURS['RED']
+        self.boss['colour'] = RED
         self.boss['canMove'] = True
         self.currentEnemies.append(self.boss)
 
@@ -273,11 +272,11 @@ class enemies():
 
         if TIME - p.invulnerabilityTime < 500:
             if round(p.flashTime / 50) % 2 == 0:
-                p.colour = COLOURS['BLACK']
+                p.colour = BLACK
             else:
-                p.colour = COLOURS['WHITE']
+                p.colour = WHITE
         else:
-            p.colour = COLOURS['WHITE']
+            p.colour = WHITE
 
     def fire(self, enemy):
         enemy['lastFireTime'] = TIME
@@ -328,8 +327,8 @@ class items():
                     if 'PLAYER_VELOCITY' in item['attributes']:  # Default 4
                         p.normalVel += item['magnitude']
                     if 'PLAYER_HEALTH' in item['attributes']:  # Default 100
-                        p.healthMax += item['magnitude']
-                        p.health += item['magnitude']
+                        p.healthMax += item['magnitude'] * 10
+                        p.health += item['magnitude'] * 10
                     if 'PROJECTILE_VELOCITY' in item['attributes']:  # Default 8
                         p.projVel += item['magnitude'] * 2
                     if 'PROJECTILE_RATE' in item['attributes']:  # Default 100
@@ -346,9 +345,9 @@ class screens():
         self.currentScreen = 11
         self.update = True
 
-        self.borderColour = (51, 51, 51)
-        self.clearedColour = (102, 204, 102)
-        self.leftItemColour = (255, 215, 0)
+        self.borderColour = GREY
+        self.clearedColour = LIME
+        self.leftItemColour = GOLD
         self.borderSize = 10
         self.topBar = pygame.Rect(0, 0, WINDOW_WIDTH, self.borderSize)
         self.bottomBar = pygame.Rect(
@@ -365,11 +364,11 @@ class screens():
     def screenUpdate(self):
         s.currentScreen = str(s.currentScreen)
         if int(s.currentScreen[0]) > 6 or int(s.currentScreen[1]) > 6:
-            e.colour = COLOURS['MAGENTA']
+            e.colour = MAGENTA
         elif int(s.currentScreen[0]) > 3 or int(s.currentScreen[1]) > 3:
-            e.colour = COLOURS['AQUA']
+            e.colour = AQUA
         else:
-            e.colour = COLOURS['RED']
+            e.colour = RED
         s.currentScreen = int(s.currentScreen)
 
         i.checkCurrentScreenItems()
@@ -420,7 +419,7 @@ class screens():
 
 class render():
     def render(self):
-        WINDOW.fill(COLOURS['BLACK'])
+        WINDOW.fill(BLACK)
 
         self.drawEnemies()
         self.drawItems()
@@ -441,8 +440,8 @@ class render():
                     enemy['model'].left - 16, enemy['model'].bottom + 16, e.boss['size'] + 32, 4)
                 e.healthBar = pygame.Rect(
                     enemy['model'].left - 16, enemy['model'].bottom + 16, e.boss['health'] * ((e.boss['size'] + 32) / e.boss['healthMax']), 4)
-                pygame.draw.rect(WINDOW, COLOURS['RED'], e.healthBarBase)
-                pygame.draw.rect(WINDOW, COLOURS['GREEN'], e.healthBar)
+                pygame.draw.rect(WINDOW, RED, e.healthBarBase)
+                pygame.draw.rect(WINDOW, GREEN, e.healthBar)
                 if TIME - e.boss['lastFireTime'] > 500:
                     e.fire(enemy)
 
@@ -457,7 +456,7 @@ class render():
                     item['screen'] = s.currentScreen
                     item['chance'] = 0
                     pygame.draw.rect(
-                        WINDOW, COLOURS[item['colour']], item['model'])
+                        WINDOW, item['colour'], item['model'])
                 if e.bossJustCleared:
                     item['chance'] /= 2
         e.bossJustCleared = False
@@ -488,21 +487,21 @@ class render():
 
     def drawGUI(self):
         screenText = NORMAL_FONT.render(
-            str(s.currentScreen), True, COLOURS['RED'])
+            str(s.currentScreen), True, RED)
         textBox = screenText.get_rect()
         textBox.left = 2 * s.borderSize
         textBox.top = 2 * s.borderSize
         WINDOW.blit(screenText, textBox)
 
         scoreText = NORMAL_FONT.render(
-            str(p.score), True, COLOURS['RED'])
+            str(p.score), True, RED)
         textBox = scoreText.get_rect()
         textBox.right = WINDOW_WIDTH - 2 * s.borderSize
         textBox.top = 2 * s.borderSize
         WINDOW.blit(scoreText, textBox)
 
-        pygame.draw.rect(WINDOW, COLOURS['RED'], p.healthBarBase)
-        pygame.draw.rect(WINDOW, COLOURS['GREEN'], p.healthBar)
+        pygame.draw.rect(WINDOW, RED, p.healthBarBase)
+        pygame.draw.rect(WINDOW, GREEN, p.healthBar)
 
 
 class debug():

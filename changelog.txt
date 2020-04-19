@@ -2,6 +2,20 @@
 ? Add more items
 ? Add events
 ? Add special rooms, NPCs? Messages?
+? Map in console, separate screen?
+
+1.7
++ Added new items:
+  GOLD ALL = 1% chance, affects PLAYER_VELOCITY PLAYER_HEALTH PROJECTILE_VELOCITY PROJECTILE_RATE by magnitude 1
+  (+1 velocity, +10 health, +2 projectile velocity, -5% fire time)
+  LIME RATE = 5% chance, affects PROJECTILE_RATE by magnitude 3 (-15% fire time)
+~ Increased AQUA PLAYER_VELOCITY item chance to 8% (from 5%)
+~ Increased MAGENTA PROJECTILE_VELOCITY item chance to 15% (from 8%)
+~ Changed colours.dat to colours.py
+  Colours can now be called directly using their name
+  eg RED instead of COLOURS['RED']
+~ Items affecting player health are now 10x their magnitude
+~ Added all existing tuple colours in code to colours.py
 
 ================================================================================
 

@@ -1,3 +1,4 @@
+from resources.colours import *
 import random
 import pygame
 
@@ -23,7 +24,7 @@ def loadTxt(location):
         result = file.read()
         file.close()
         return result
-        
+
 
 def cRC(limit):  # createRandomCoordinates
     return random.randint(limit / 10, limit - 4 * borderSize)

@@ -1,18 +1,36 @@
 [{
-    'colour': 'AQUA',
+    'colour': AQUA,
     'model': pygame.Rect(cRC(WINDOW_WIDTH), cRC(WINDOW_HEIGHT), 5, 5),
     'attributes': 'PLAYER_VELOCITY',
     'magnitude': 1.5,
-    'chance': 5,
+    'chance': 8,
     'rolled': False,
     'screen': 0
   },
   {
-    'colour': 'MAGENTA',
+    'colour': MAGENTA,
     'model': pygame.Rect(cRC(WINDOW_WIDTH), cRC(WINDOW_HEIGHT), 5, 5),
     'attributes': 'PROJECTILE_VELOCITY',
     'magnitude': 1,
-    'chance': 8,
+    'chance': 15,
+    'rolled': False,
+    'screen': 0
+  },
+  {
+    'colour': GOLD,
+    'model': pygame.Rect(cRC(WINDOW_WIDTH), cRC(WINDOW_HEIGHT), 5, 5),
+    'attributes': 'PLAYER_VELOCITY PLAYER_HEALTH PROJECTILE_VELOCITY PROJECTILE_RATE',
+    'magnitude': 1,
+    'chance': 1,
+    'rolled': False,
+    'screen': 0
+  },
+  {
+    'colour': LIME,
+    'model': pygame.Rect(cRC(WINDOW_WIDTH), cRC(WINDOW_HEIGHT), 5, 5),
+    'attributes': 'PROJECTILE_RATE',
+    'magnitude': 3,
+    'chance': 5,
     'rolled': False,
     'screen': 0
   }
@@ -21,7 +39,7 @@
 
 # Changeable values
 
-# PLAYER_VELOCITY, +exact
-# PLAYER_HEALTH, +exact
-# PROJECTILE_VELOCITY, +2x
-# PROJECTILE_RATE, -5x
+# PLAYER_VELOCITY, +exact, DEFAULT 4
+# PLAYER_HEALTH, +10x, DEFAULT 100
+# PROJECTILE_VELOCITY, +2x, DEFAULT 8
+# PROJECTILE_RATE, -5x, DEFAULT 100
