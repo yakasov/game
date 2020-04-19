@@ -69,17 +69,18 @@ class player():
 
 
     def fire(self, direction, magnitude):
-        self.lastFireTime = TIME
-        if direction == 'x':
-            xModifier = magnitude * 0.5 * self.modelWidth
-            yModifier = 0
-        if direction == 'y':
-            yModifier = magnitude * 0.5 * self.modelHeight
-            xModifier = 0
+        if s.currentScreen not in e.screenCleared:
+            self.lastFireTime = TIME
+            if direction == 'x':
+                xModifier = magnitude * 0.5 * self.modelWidth
+                yModifier = 0
+            if direction == 'y':
+                yModifier = magnitude * 0.5 * self.modelHeight
+                xModifier = 0
 
-        self.newProjectile = pygame.Rect(
-            self.model.centerx + xModifier, self.model.centery + yModifier, 3, 3)
-        self.projectiles.append([self.newProjectile, direction, magnitude])
+            self.newProjectile = pygame.Rect(
+                self.model.centerx + xModifier, self.model.centery + yModifier, 3, 3)
+            self.projectiles.append([self.newProjectile, direction, magnitude])
 
     def updateProjectiles(self):
         for projectile in self.projectiles:
@@ -373,8 +374,6 @@ class screens():
 
         i.checkCurrentScreenItems()
         e.createEnemies()
-        if s.currentScreen != 11:
-            d.printInfo()
 
     def createBorders(self):
         self.bordersToDraw = []
@@ -413,6 +412,7 @@ class screens():
 
         i.currentItems = []
         self.update = True
+        d.print = True
 
     def createRandomCoordinates(self, limit):
         return random.randint(limit / 10, limit - 8 * s.borderSize)
@@ -506,6 +506,9 @@ class render():
 
 
 class debug():
+    def __init__(self):
+        self.print = True
+
     def printInfo(self):
         print('====================' +
               '\nCurrent Screen: {}'.format(s.currentScreen) +
@@ -513,7 +516,7 @@ class debug():
               '\n\nEnemies: {}, Velocity: {}'.format(e.enemyCounts[s.currentScreen], e.vel) +
               '\nBoss: {}, Attributes: {}'.format(self.checkBosses(), self.getBossAttributes()) +
               '\n\nItems: {}'.format(self.getItemAttributes()) +
-              '\n\nPlayer Health: {}, Velocity: {}\n\n'.format(p.health, p.vel))
+              '\n\nPlayer Health: {}, Velocity: {}\n\n'.format(p.health, p.normalVel))
 
     def checkBosses(self):
         return bool(e.boss['health'] > 0)
@@ -625,6 +628,10 @@ while True:
 
     FPSCLOCK.tick(FPS)
     TIME += FPSCLOCK.tick(FPS)
+
+    if d.print and s.currentScreen != 11:
+        d.printInfo()
+        d.print = False
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:

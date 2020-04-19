@@ -5,6 +5,10 @@
 
 ================================================================================
 
+1.6.1
++ You can no longer fire once a room has been cleared
+* Fixed debug info printing cleared velocity rather than normal velocity for the player
+
 1.6
 + Added a new class, render()
 ~ All functions involved in drawing objects have been moved to render()
