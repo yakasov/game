@@ -5,11 +5,13 @@
 ? Map in console, separate screen?
 ? Sound? Graphics?
 
+FOR VERSION TITLES FOUND ON GITHUB PRIOR TO 1.7.1, PLEASE REFER TO README
+
 1.7.1
 + Health is now also shown in text form on screen
 ~ AQUA PLAYER_VELOCITY item magnitude decreased to 1 (from 1.5)
 - Removed some unnecessary event calls
-* Projectiles now cause invulnerability to trigger 
+* Projectiles now cause invulnerability to trigger
 
 1.7
 + Added new items:
