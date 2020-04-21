@@ -36,18 +36,24 @@ class player():
         self.invulnerabilityTime = 0
         # Temporary storage for when the next player invulnerability flash can occur
 
-    def updateHealth(self):
-        self.healthBar = pygame.Rect(
-            0, WINDOW_HEIGHT, self.health * (WINDOW_WIDTH / self.healthMax), 50)
-
     def checkHealth(self):
         if self.health > self.healthMax:
             self.health = self.healthMax
 
-        self.updateHealth()
+        self.healthBar = pygame.Rect(
+            0, WINDOW_HEIGHT, self.health * (WINDOW_WIDTH / self.healthMax), 50)
 
         if self.health <= 0:
             self.gameOver()
+
+    def flashPlayer(self):
+        if TIME - self.invulnerabilityTime < 500:
+            if round(self.flashTime / 50) % 2 == 0:
+                self.colour = BLACK
+            else:
+                self.colour = WHITE
+        else:
+            self.colour = WHITE
 
     def gameOver(self):
         for i in range(52):
@@ -223,7 +229,6 @@ class enemies():
 
     def bossDefeated(self, enemy):
         p.health += 20
-        p.updateHealth()
         self.currentEnemies.remove(enemy)
         self.bossesDefeated += 1
         self.bossJustCleared = True
@@ -258,7 +263,6 @@ class enemies():
             p.score += 5
 
     def checkEnemyCollisions(self):
-        p.flashTime = TIME - p.invulnerabilityTime
         for enemy in self.currentEnemies:
             if TIME - p.invulnerabilityTime > 500:
                 if enemy['model'].colliderect(p.model):
@@ -268,15 +272,6 @@ class enemies():
                     else:
                         p.health -= 15
                         p.invulnerabilityTime = TIME
-                p.updateHealth()
-
-        if TIME - p.invulnerabilityTime < 500:
-            if round(p.flashTime / 50) % 2 == 0:
-                p.colour = BLACK
-            else:
-                p.colour = WHITE
-        else:
-            p.colour = WHITE
 
     def fire(self, enemy):
         enemy['lastFireTime'] = TIME
@@ -304,9 +299,11 @@ class enemies():
                 if projectile[0].centery > WINDOW_HEIGHT or projectile[0].centery < 0:
                     self.projectiles.remove(projectile)
 
-                if projectile[0].colliderect(p.model):
-                    p.health -= 10
-                    self.projectiles.remove(projectile)
+                if TIME - p.invulnerabilityTime > 500:
+                    if projectile[0].colliderect(p.model):
+                        p.health -= 10
+                        self.projectiles.remove(projectile)
+                        p.invulnerabilityTime = TIME
             except ValueError:
                 print('Error removing enemy projectile! @ {}'.format(TIME))
 
@@ -486,6 +483,9 @@ class render():
         p.checkHealth()
 
     def drawGUI(self):
+        pygame.draw.rect(WINDOW, RED, p.healthBarBase)
+        pygame.draw.rect(WINDOW, GREEN, p.healthBar)
+
         screenText = NORMAL_FONT.render(
             str(s.currentScreen), True, RED)
         textBox = screenText.get_rect()
@@ -500,8 +500,12 @@ class render():
         textBox.top = 2 * s.borderSize
         WINDOW.blit(scoreText, textBox)
 
-        pygame.draw.rect(WINDOW, RED, p.healthBarBase)
-        pygame.draw.rect(WINDOW, GREEN, p.healthBar)
+        healthText = NORMAL_FONT.render(
+            '{} / {}'.format(p.health, p.healthMax), True, BLACK)
+        textBox = healthText.get_rect()
+        textBox.center = p.healthBarBase.center
+        WINDOW.blit(healthText, textBox)
+
 
 
 class debug():
@@ -612,7 +616,9 @@ while True:
         elif keys[pygame.K_d]:
             p.fire('x', 1)
 
+    p.flashTime = TIME - p.invulnerabilityTime
     p.updateProjectiles()
+    p.flashPlayer()
     e.updateEnemies()
     e.updateProjectiles()
     e.checkEnemyCollisions()
