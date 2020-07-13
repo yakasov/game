@@ -6,11 +6,11 @@ def generator(lines):
     for line in lines:
         for i, cell in enumerate(line):
             requirement = random.randint(0, 100)
-            result = random.randint(0, 80)
+            result = random.randint(0, 70)
 
             if result > requirement:
                 line[i] = 1
-            if result >= 72:
+            if result >= 56:
                 line[i] = 2
 
     lines[7][0] = 1

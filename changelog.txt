@@ -7,6 +7,43 @@
 
 FOR VERSION TITLES FOUND ON GITHUB PRIOR TO 1.7.1, PLEASE REFER TO README
 
+1.8
++ Added new enemy kill animation
++ Added acquired items display
++ Added end screen score display
++ Added new items:
+  WHITE PLAYER_VELOCITY: +1 velocity, 2% chance
+  WHITE PLAYER_HEALTH: +10 health, 2% chance
+  WHITE PROJECTILE_VELOCITY: +3 projectile velocity, 2% chance
+  WHITE PROJECTILE_RATE: -25ms fire time, 2% chance
+  GREY PROJECTILE_RATE: -10ms fire time, 15% chance
+  GREY PROJECTILE_VELOCITY: +1.5 projectile velocity, 15% chance
+~ Player model size increased by 33%
+~ Player speeds increased
+~ Player enters a screen closer to the border
+~ Enemies will now only give health 33% of the time
+~ Enemy projectiles size increased by 33%
+~ Enemies move 25% faster
+~ Enemy fire rate increases faster
+~ Enemies spawn closer to the middle of the screen
+~ Bosses heal less health
+~ Bosses deal less damage from collisions
+~ Bosses fire 20% faster
+~ Boss projectiles are 25% more accurate
+~ Map generator changes:
+  Any given tile now has a 70% chance of becoming a room, rather than 80%
+  Any given tile has a 20% chance of becoming a boss room
+~ Inverted controls:
+  WASD is now used for movement
+  Arrow Keys are now used for firing
+~ items.dat syntax simplified
+~ Increased LIME PROJECTILE_RATE item chance to 7% (from 5%)
+~ Window size changed from 500x500 to 750x750
+* Fixed bossProjFireRate being used incorrectly causing too much boss projectile firing
+* Fixed enemy projectiles persisting across screens
+
+================================================================================
+
 1.7.1
 + Health is now also shown in text form on screen
 ~ AQUA PLAYER_VELOCITY item magnitude decreased to 1 (from 1.5)
