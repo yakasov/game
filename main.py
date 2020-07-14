@@ -22,7 +22,7 @@ class player():
         self.score = 0
 
         self.projectiles = []
-        self.projVel = 6
+        self.projVel = 8
         self.projColour = WHITE
         self.projFireRate = 166  # How long the player must wait before firing again
         self.lastFireTime = 0
@@ -116,10 +116,7 @@ class enemies():
         self.projectiles = []
         self.projVel = 6
         self.projColour = RED
-        # How long the enemy['model'] must wait before firing again
-        self.projFireRate = 500
-        # This is a default and can differ between enemies
-        self.bossProjFireRate = 40
+        self.bossProjFireRate = 5
         self.lastFireTime = 0
         self.particles = []
 
@@ -172,11 +169,16 @@ class enemies():
         self.currentEnemies = []
         self.newEnemy = {}
         if s.currentScreen != 99:
-            self.projFireRate = 500 - 9 * len(self.screenCleared)
+            self.projFireRate = 333 - 9 * len(self.screenCleared)
+            if self.enemyCounts[s.currentScreen] == 0 and not s.currentScreen in self.screenCleared:
+                self.createBoss()
+                self.enemyCounts[s.currentScreen] = random.randint(2, 6)
+
             for count in range(0, self.enemyCounts[s.currentScreen]):
+                self.randMult = 1 + (random.randint(-2, 6) / 10)
                 self.newEnemy = {}
                 self.newEnemy['model'] = pygame.Rect(s.createRandomCoordinates(WINDOW_WIDTH), s.createRandomCoordinates(
-                    WINDOW_HEIGHT), self.modelWidth, self.modelHeight)
+                    WINDOW_HEIGHT), self.modelWidth * self.randMult, self.modelHeight * self.randMult)
                 # Every third enemy['model'] is a 'shooter' type
                 if count % 3 == 0:
                     self.type = 'shooter'
@@ -189,12 +191,9 @@ class enemies():
                 self.newEnemy['canMove'] = True
                 self.currentEnemies.append(self.newEnemy)
 
-            if self.enemyCounts[s.currentScreen] == 0 and not s.currentScreen in self.screenCleared:
-                self.createBoss()
-
     def createBoss(self):
         self.boss['health'] = random.randint(
-            15, 30) + (self.bossesDefeated + 1) * 0.5 + len(self.screenCleared)
+            15, 25) + (self.bossesDefeated + 1) * 0.5 + len(self.screenCleared)
         self.boss['healthMax'] = self.boss['health']
         self.boss['damage'] = len(self.screenCleared) * 3
         self.boss['size'] = random.randint(100, 200)
@@ -202,8 +201,7 @@ class enemies():
             0, len(self.types) - 1)]
         self.type = self.boss['type']
         self.boss['lastFireTime'] = 0
-        self.vel = random.randint(
-            1, 4) + (len(self.screenCleared) / 10)
+        self.boss['velocity'] = random.uniform(0.66, 4.33) + (len(self.screenCleared) / 5)
         self.boss['model'] = pygame.Rect(
             WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, self.boss['size'], self.boss['size'])
         self.boss['colour'] = RED
@@ -219,8 +217,7 @@ class enemies():
                             self.boss['health'] -= 1
                             if self.boss['health'] <= 0:
                                 self.bossDefeated(enemy)
-                        else:  # If not boss, goto updateHealth()
-                            self.updateHealth(enemy)
+                        self.updateHealth(enemy)
                     except ValueError:
                         print(
                             '>>> Too many projectiles causing too many enemy kills! @ {}'.format(TIME))
@@ -246,9 +243,12 @@ class enemies():
     def updateEnemyPos(self, enemy):
         if TIME - self.lastMovement > self.enemyUpdatePeriod:
             for otherEnemy in self.currentEnemies:
-                if enemy['model'].colliderect(otherEnemy['model']) and enemy['model'] != otherEnemy['model']:
+                if enemy['model'].colliderect(otherEnemy['model']) and enemy['model'] != otherEnemy['model'] and ('health' not in otherEnemy and 'health' not in enemy):
                     otherEnemy['canMove'] = False
 
+            self.prevVel = self.vel
+            if 'velocity' in enemy:
+                self.vel = enemy['velocity']
             if enemy['canMove']:
                 if enemy['model'].centerx < p.model.centerx:
                     enemy['model'].centerx += self.vel
@@ -258,16 +258,18 @@ class enemies():
                     enemy['model'].centery += self.vel
                 else:
                     enemy['model'].centery -= self.vel
+            self.vel = self.prevVel
 
         enemy['canMove'] = True
 
     def updateHealth(self, enemy):  # Called when an enemy is hit
-        enemy['colour'] = self.enemyStages[self.enemyStages.index(
-            enemy['colour']) - 1]  # Decrease enemy['model'] 'stage'
-        if enemy['colour'] == 'DEAD':
-            self.enemyKilled(enemy)
-        else:
-            p.score += 5
+        if 'health' not in enemy:
+            enemy['colour'] = self.enemyStages[self.enemyStages.index(
+                enemy['colour']) - 1]  # Decrease enemy['model'] 'stage'
+            if enemy['colour'] == 'DEAD':
+                self.enemyKilled(enemy)
+            else:
+                p.score += 5
 
     def enemyKilled(self, enemy):
         self.currentEnemies.remove(enemy)
@@ -301,8 +303,12 @@ class enemies():
         dy = p.model.centery - enemy['model'].centery
         if self.boss['health'] > 0:
             self.boss['lastFireTime'] = enemy['lastFireTime']
-            dx += random.randint(-75, 75)
-            dy += random.randint(-75, 75)
+            if random.randint(1, 2) == 2:
+                dx += random.randint(-100, 100)
+                dy += random.randint(-100, 100)
+            else:
+                dx += random.randint(-25, 25)
+                dy += random.randint(-25, 25)
 
         self.newProjectile = pygame.Rect(
             enemy['model'].centerx, enemy['model'].centery, 4, 4)
@@ -380,8 +386,8 @@ class items():
                     if 'PLAYER_VELOCITY' in item['attributes']:  # Default 4
                         p.normalVel += item['magnitude']
                     if 'PLAYER_HEALTH' in item['attributes']:  # Default 100
-                        p.healthMax += item['magnitude'] * 10
-                        p.health += item['magnitude'] * 10
+                        p.healthMax += item['magnitude'] * 15
+                        p.health += item['magnitude'] * 15
                     if 'PROJECTILE_VELOCITY' in item['attributes']:  # Default 8
                         p.projVel += item['magnitude'] * 2
                     if 'PROJECTILE_RATE' in item['attributes']:  # Default 100
@@ -500,9 +506,9 @@ class render():
                 e.fire(enemy)
             if e.boss['health'] > 0:
                 e.healthBarBase = pygame.Rect(
-                    enemy['model'].left - 16, enemy['model'].bottom + 16, e.boss['size'] + 32, 4)
+                    e.boss['model'].left - 16, e.boss['model'].bottom + 16, e.boss['size'] + 32, 4)
                 e.healthBar = pygame.Rect(
-                    enemy['model'].left - 16, enemy['model'].bottom + 16, e.boss['health'] * ((e.boss['size'] + 32) / e.boss['healthMax']), 4)
+                    e.boss['model'].left - 16, e.boss['model'].bottom + 16, e.boss['health'] * ((e.boss['size'] + 32) / e.boss['healthMax']), 4)
                 pygame.draw.rect(WINDOW, RED, e.healthBarBase)
                 pygame.draw.rect(WINDOW, GREEN, e.healthBar)
                 if TIME - e.boss['lastFireTime'] > e.bossProjFireRate:
@@ -586,14 +592,42 @@ class render():
         textBox.center = p.healthBarBase.center
         WINDOW.blit(healthText, textBox)
 
+    def showMap(self):
+        map = []
+        mapText = []
+        for row in range(1, 10):
+            line = ''
+            for cell in range(1, 10):
+                if cell * 10 + row in e.screenCleared:
+                    line += '██'
+                elif cell * 10 + row == 99:
+                    line += '▒▒'
+                elif cell * 10 + row not in e.enemyCounts:
+                    line += '  '
+                else:
+                    line += '░░'
+                for item in i.items:
+                    if cell * 10 + row == item['screen']:
+                        line = line[:-2] + '▓▓'
+            map.append(line)
+
+        numpy.flip(map, 0)
+        for line in map:
+            mapText.append(NORMAL_FONT.render(
+                line, True, WHITE))
+        for line in mapText:
+            textBox = line.get_rect()
+            textBox.center = WINDOW_WIDTH / 2, WINDOW_HEIGHT / 1.5 - (mapText.index(line) + 1) * 32
+            WINDOW.blit(line, textBox)
+        pygame.display.update()
+
 
 class debug():
     def __init__(self):
         self.print = True
 
     def printInfo(self):
-        print('====================' +
-              '\nCurrent Screen: {}'.format(s.currentScreen) +
+        print('\nCurrent Screen: {}'.format(s.currentScreen) +
               '\nEntering at X: {}, Y: {}'.format(p.model.centerx, p.model.centery) +
               '\n\nEnemies: {}, Velocity: {}'.format(e.enemyCounts[s.currentScreen], e.vel) +
               '\nBoss: {}, Attributes: {}'.format(self.checkBosses(), self.getBossAttributes()) +
@@ -715,6 +749,9 @@ while True:
         p.vel = p.normalVel
 
     r.render()
+
+    if keys[pygame.K_TAB]:
+        r.showMap()
 
     FPSCLOCK.tick(FPS)
     TIME += FPSCLOCK.tick(FPS)

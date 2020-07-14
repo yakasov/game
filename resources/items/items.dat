@@ -13,7 +13,7 @@
   {
     'colour': GOLD,
     'attributes': 'PLAYER_VELOCITY PLAYER_HEALTH PROJECTILE_VELOCITY PROJECTILE_RATE',
-    'magnitude': 1,
+    'magnitude': 2,
     'chance': 1
   },
   {
@@ -64,6 +64,6 @@
 # Changeable values
 
 # PLAYER_VELOCITY, +exact, DEFAULT 4
-# PLAYER_HEALTH, +10x, DEFAULT 100
+# PLAYER_HEALTH, +15x, DEFAULT 100
 # PROJECTILE_VELOCITY, +2x, DEFAULT 8
 # PROJECTILE_RATE, -5x, DEFAULT 100

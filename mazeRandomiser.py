@@ -6,11 +6,11 @@ def generator(lines):
     for line in lines:
         for i, cell in enumerate(line):
             requirement = random.randint(0, 100)
-            result = random.randint(0, 70)
+            result = random.randint(0, 50)
 
             if result > requirement:
                 line[i] = 1
-            if result >= 56:
+            if result > 40:
                 line[i] = 2
 
     lines[7][0] = 1
@@ -28,7 +28,8 @@ def patcher(lines):
             try:
                 if line[i] == 0:
                     if (line[i - 1] + line[i + 1] + lines[lines.index(line) - 1][i] + lines[lines.index(line) + 1][i]) > 2:
-                        line[i] = 1
+                        if random.randint(1, 3) == 3:
+                            line[i] = 1
             except IndexError:
                 pass
 

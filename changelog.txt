@@ -7,6 +7,28 @@
 
 FOR VERSION TITLES FOUND ON GITHUB PRIOR TO 1.7.1, PLEASE REFER TO README
 
+1.8.1
++ Added map feature, viewable using TAB
++ Bosses will spawn with enemies
++ Enemy sizes will now vary (but will all have the same size ratio)
+~ Increased GOLD ALL chance magnitude from 1 to 2
+~ Increased PLAYER_HEALTH item bonuses by 50%
+~ Increased player projectile speed by 33%
+~ Enemies fire 33% faster
+~ Boss movement speed range increased (from 1 -> 4 to 0.66 -> 4.33)
+  Boss movement speed increase over time increased by 2x
+~ Bosses will vary between firing accurately and firing randomly in a cone towards you
+~ Boss fire rate increased (now 5ms between shots)
+~ Boss health maximum decreased
+~ Map generator changes:
+  Any given tile now has a 50% chance of becoming a room, rather than 70%
+  Map patching has been made less likely (previously if a tile had 2 neighbours,
+  it would also become a room. This now happens 33% of the time instead)
+~ GREY colour made lighter
+* Boss room chance fixed as was slightly too high
+! Maps can generate with inaccessible rooms, viewable on the map
+! Enemies can phase through bosses - they can be killed normally when they move outside
+
 1.8
 + Added new enemy kill animation
 + Added acquired items display
