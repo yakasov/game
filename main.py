@@ -212,16 +212,12 @@ class enemies():
         for enemy in self.currentEnemies:
             for projectile in p.projectiles:
                 if projectile[0].colliderect(enemy['model']):
-                    try:
-                        if self.boss['health'] > 0:
-                            self.boss['health'] -= 1
-                            if self.boss['health'] <= 0:
-                                self.bossDefeated(enemy)
-                        self.updateHealth(enemy)
-                    except ValueError:
-                        print(
-                            '>>> Too many projectiles causing too many enemy kills! @ {}'.format(TIME))
                     p.projectiles.remove(projectile)
+                    if self.boss['health'] > 0:
+                        self.boss['health'] -= 1
+                        if self.boss['health'] <= 0:
+                            self.bossDefeated(enemy)
+                    self.updateHealth(enemy)
 
             self.updateEnemyPos(enemy)
 
@@ -321,19 +317,16 @@ class enemies():
             self.dirvect.scale_to_length(self.projVel)
             projectile[0].move_ip(self.dirvect)
 
-            try:
-                if projectile[0].centerx > WINDOW_WIDTH or projectile[0].centerx < 0:
-                    self.projectiles.remove(projectile)
-                if projectile[0].centery > WINDOW_HEIGHT or projectile[0].centery < 0:
-                    self.projectiles.remove(projectile)
+            if projectile[0].centerx > WINDOW_WIDTH or projectile[0].centerx < 0:
+                self.projectiles.remove(projectile)
+            elif projectile[0].centery > WINDOW_HEIGHT or projectile[0].centery < 0:
+                self.projectiles.remove(projectile)
 
-                if TIME - p.invulnerabilityTime > 500:
-                    if projectile[0].colliderect(p.model):
-                        p.health -= 10
-                        self.projectiles.remove(projectile)
-                        p.invulnerabilityTime = TIME
-            except ValueError:
-                print('Error removing enemy projectile! @ {}'.format(TIME))
+            if TIME - p.invulnerabilityTime > 500:
+                if projectile[0].colliderect(p.model):
+                    p.health -= 10
+                    self.projectiles.remove(projectile)
+                    p.invulnerabilityTime = TIME
 
         for particle in self.particles:
             self.dirvect = pygame.math.Vector2(particle['projection'][0] * 2, particle['projection'][1] * 2)

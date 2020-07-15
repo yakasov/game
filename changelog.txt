@@ -7,6 +7,10 @@
 
 FOR VERSION TITLES FOUND ON GITHUB PRIOR TO 1.7.1, PLEASE REFER TO README
 
+1.8.2
+* Fixed projectiles being incorrectly removed when leaving the screen
+* Fixed player projectiles sometimes registering damage multiple times
+
 1.8.1
 + Added map feature, viewable using TAB
 + Bosses will spawn with enemies
