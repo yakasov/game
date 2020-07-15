@@ -1,1 +1,1 @@
-disable=wildcard-import, complex-code
+disable=wildcard-import
