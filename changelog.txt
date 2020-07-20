@@ -1,11 +1,21 @@
 ? Add End Boss
-? Add more items
 ? Add events
 ? Add special rooms, NPCs? Messages?
-? Map in console, separate screen?
 ? Sound? Graphics?
 
 FOR VERSION TITLES FOUND ON GITHUB PRIOR TO 1.7.1, PLEASE REFER TO README
+
+1.8.3
+~ Decreased PROJECTILE VELOCITY magnitude change to 1.5x from 2x
+~ Increased PROJECTILE RATE magnitude change to 8x from 5x
+~ Decreased all item chances by 20%
+~ Enemies have an even chance of becoming any enemy type, rather than 33% becoming shooter type specifically
+~ Increased enemy base velocity by 16%
+~ Enemies with type 'base' move 1.2x faster than normal
+~ Bosses will fire more random shots
+~ Increased enemy death particle duration
+~ More particles are produced upon enemy death
+* Added error handling for rare enemy removal crash
 
 1.8.2
 * Fixed projectiles being incorrectly removed when leaving the screen

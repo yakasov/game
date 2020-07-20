@@ -47,6 +47,7 @@ class player():
             self.gameOver()
 
     def flashPlayer(self):
+        self.flashTime = TIME - self.invulnerabilityTime
         if TIME - self.invulnerabilityTime < 500:
             if round(self.flashTime / 50) % 2 == 0:
                 self.colour = BLACK
@@ -77,7 +78,6 @@ class player():
 
         time.sleep(3)
         pygame.quit()
-
 
     def fire(self, direction, magnitude):
         if s.currentScreen not in e.screenCleared:
@@ -145,16 +145,16 @@ class enemies():
                 if s.lines[y][x] == 1:
                     if x * y < 9:
                         self.enemyCounts[(x + 1) * 10 + (y + 1)
-                                      ] = random.randint(2, 6)
+                                         ] = random.randint(2, 6)
                     elif x * y < 17:
                         self.enemyCounts[(x + 1) * 10 + (y + 1)
-                                      ] = random.randint(4, 8)
+                                         ] = random.randint(4, 8)
                     elif x * y < 40:
                         self.enemyCounts[(x + 1) * 10 + (y + 1)
-                                      ] = random.randint(5, 11)
+                                         ] = random.randint(5, 11)
                     else:
                         self.enemyCounts[(x + 1) * 10 + (y + 1)
-                                      ] = random.randint(4, 14)
+                                         ] = random.randint(4, 14)
                 elif s.lines[y][x] == 2:
                     self.enemyCounts[(x + 1) * 10 + (y + 1)] = 0
 
@@ -164,7 +164,7 @@ class enemies():
 
     def createEnemies(self):
         self.projectiles = []
-        self.vel = 5 + 0.25 * len(self.screenCleared)
+        self.vel = 6 + 0.25 * len(self.screenCleared)
 
         self.currentEnemies = []
         self.newEnemy = {}
@@ -179,11 +179,9 @@ class enemies():
                 self.newEnemy = {}
                 self.newEnemy['model'] = pygame.Rect(s.createRandomCoordinates(WINDOW_WIDTH), s.createRandomCoordinates(
                     WINDOW_HEIGHT), self.modelWidth * self.randMult, self.modelHeight * self.randMult)
-                # Every third enemy['model'] is a 'shooter' type
-                if count % 3 == 0:
-                    self.type = 'shooter'
-                else:
-                    self.type = 'base'
+                self.type = self.types[random.randint(0, len(self.types) - 1)]
+                if self.type == 'base':
+                    self.newEnemy['velocity'] = self.vel * 1.2
 
                 self.newEnemy['colour'] = self.colour
                 self.newEnemy['type'] = self.type
@@ -201,7 +199,8 @@ class enemies():
             0, len(self.types) - 1)]
         self.type = self.boss['type']
         self.boss['lastFireTime'] = 0
-        self.boss['velocity'] = random.uniform(0.66, 4.33) + (len(self.screenCleared) / 5)
+        self.boss['velocity'] = random.uniform(
+            0.66, 4.33) + (len(self.screenCleared) / 5)
         self.boss['model'] = pygame.Rect(
             WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2, self.boss['size'], self.boss['size'])
         self.boss['colour'] = RED
@@ -268,17 +267,22 @@ class enemies():
                 p.score += 5
 
     def enemyKilled(self, enemy):
-        self.currentEnemies.remove(enemy)
+        try:
+            self.currentEnemies.remove(enemy)
+        except:
+            print('Error removing {} @ {}'.format(enemy, TIME))
         p.score += 50
         if random.randint(1, 3) == 3:
             p.health += 1
         self.enemyKilledAnimation(enemy, 1)
 
     def enemyKilledAnimation(self, enemy, multiplier):
-        for i in range(random.randint(1, 5) * multiplier):
+        for i in range(random.randint(3, 7) * multiplier):
             self.newParticle = {}
-            self.newParticle['model'] = pygame.Rect(enemy['model'].centerx, enemy['model'].centery, 1, 1)
-            self.newParticle['projection'] = [random.randint(-200, 200), random.randint(-200, 200)]
+            self.newParticle['model'] = pygame.Rect(
+                enemy['model'].centerx, enemy['model'].centery, 1, 1)
+            self.newParticle['projection'] = [
+                random.randint(-200, 200), random.randint(-200, 200)]
             self.newParticle['age'] = 0
             self.particles.append(self.newParticle)
 
@@ -299,7 +303,7 @@ class enemies():
         dy = p.model.centery - enemy['model'].centery
         if self.boss['health'] > 0:
             self.boss['lastFireTime'] = enemy['lastFireTime']
-            if random.randint(1, 2) == 2:
+            if random.randint(1, 3) != 2:
                 dx += random.randint(-100, 100)
                 dy += random.randint(-100, 100)
             else:
@@ -329,12 +333,13 @@ class enemies():
                     p.invulnerabilityTime = TIME
 
         for particle in self.particles:
-            self.dirvect = pygame.math.Vector2(particle['projection'][0] * 2, particle['projection'][1] * 2)
+            self.dirvect = pygame.math.Vector2(
+                particle['projection'][0] * 2, particle['projection'][1] * 2)
             self.dirvect.normalize()
             self.dirvect.scale_to_length(self.projVel)
             particle['model'].move_ip(self.dirvect)
 
-            if particle['age'] > 30:
+            if particle['age'] > 40:
                 self.particles.remove(particle)
             else:
                 particle['age'] += 1
@@ -349,18 +354,21 @@ class items():
         self.itemChanges['projectile_velocity'] = 0
         self.itemChanges['projectile_rate'] = 0
 
-
     def updateItemDisplay(self):
         self.acquiredItems = []
 
         if self.itemChanges['player_velocity'] > 0:
-            self.acquiredItems.append('Player Velocity +{}'.format(self.itemChanges['player_velocity']))
+            self.acquiredItems.append(
+                'Player Velocity +{}'.format(self.itemChanges['player_velocity']))
         if self.itemChanges['player_health'] > 0:
-            self.acquiredItems.append('Player Health +{}'.format(self.itemChanges['player_health']))
+            self.acquiredItems.append(
+                'Player Health +{}'.format(self.itemChanges['player_health']))
         if self.itemChanges['projectile_velocity'] > 0:
-            self.acquiredItems.append('Projectile Velocity +{}'.format(self.itemChanges['projectile_velocity']))
+            self.acquiredItems.append(
+                'Projectile Velocity +{}'.format(self.itemChanges['projectile_velocity']))
         if self.itemChanges['projectile_rate'] < 0:
-            self.acquiredItems.append('Projectile Fire Delay {}ms'.format(self.itemChanges['projectile_rate']))
+            self.acquiredItems.append('Projectile Fire Delay {}ms'.format(
+                self.itemChanges['projectile_rate']))
 
     def checkCurrentScreenItems(self):
         self.currentItems = []
@@ -382,9 +390,9 @@ class items():
                         p.healthMax += item['magnitude'] * 15
                         p.health += item['magnitude'] * 15
                     if 'PROJECTILE_VELOCITY' in item['attributes']:  # Default 8
-                        p.projVel += item['magnitude'] * 2
+                        p.projVel += item['magnitude'] * 1.5
                     if 'PROJECTILE_RATE' in item['attributes']:  # Default 100
-                        p.projFireRate -= item['magnitude'] * 5
+                        p.projFireRate -= item['magnitude'] * 8
                     print('Player picked up {} @ {}'.format(item, TIME))
                     self.currentItems.remove(item)
                     item['chance'] = 0
@@ -396,9 +404,10 @@ class items():
         if 'PLAYER_HEALTH' in item['attributes']:  # Default 100
             self.itemChanges['player_health'] += item['magnitude'] * 10
         if 'PROJECTILE_VELOCITY' in item['attributes']:  # Default 8
-            self.itemChanges['projectile_velocity'] += item['magnitude'] * 2
+            self.itemChanges['projectile_velocity'] += item['magnitude'] * 1.5
         if 'PROJECTILE_RATE' in item['attributes']:  # Default 100
-            self.itemChanges['projectile_rate'] -= item['magnitude'] * 5
+            self.itemChanges['projectile_rate'] -= item['magnitude'] * 8
+
 
 class screens():
     def __init__(self):
@@ -610,7 +619,8 @@ class render():
                 line, True, WHITE))
         for line in mapText:
             textBox = line.get_rect()
-            textBox.center = WINDOW_WIDTH / 2, WINDOW_HEIGHT / 1.5 - (mapText.index(line) + 1) * 32
+            textBox.center = WINDOW_WIDTH / 2, WINDOW_HEIGHT / \
+                1.5 - (mapText.index(line) + 1) * 32
             WINDOW.blit(line, textBox)
         pygame.display.update()
 
@@ -727,7 +737,6 @@ while True:
         elif keys[pygame.K_RIGHT]:
             p.fire('x', 1)
 
-    p.flashTime = TIME - p.invulnerabilityTime
     p.updateProjectiles()
     p.flashPlayer()
     e.updateEnemies()

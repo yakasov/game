@@ -2,13 +2,13 @@
     'colour': AQUA,
     'attributes': 'PLAYER_VELOCITY',
     'magnitude': 1,
-    'chance': 8
+    'chance': 6
   },
   {
     'colour': MAGENTA,
     'attributes': 'PROJECTILE_VELOCITY',
     'magnitude': 1,
-    'chance': 15
+    'chance': 12
   },
   {
     'colour': GOLD,
@@ -20,7 +20,7 @@
     'colour': LIME,
     'attributes': 'PROJECTILE_RATE',
     'magnitude': 3,
-    'chance': 7
+    'chance': 5
   },
   {
     'colour': WHITE,
@@ -50,13 +50,13 @@
     'colour': GREY,
     'attributes': 'PROJECTILE_RATE',
     'magnitude': 2,
-    'chance': 15
+    'chance': 12
   },
   {
     'colour': GREY,
     'attributes': 'PROJECTILE_VELOCITY',
     'magnitude': 0.75,
-    'chance': 15
+    'chance': 12
   }
 ]
 
@@ -65,5 +65,5 @@
 
 # PLAYER_VELOCITY, +exact, DEFAULT 4
 # PLAYER_HEALTH, +15x, DEFAULT 100
-# PROJECTILE_VELOCITY, +2x, DEFAULT 8
-# PROJECTILE_RATE, -5x, DEFAULT 100
+# PROJECTILE_VELOCITY, +1.5x, DEFAULT 8
+# PROJECTILE_RATE, -8x, DEFAULT 100
